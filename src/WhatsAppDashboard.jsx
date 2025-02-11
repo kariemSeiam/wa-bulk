@@ -37,7 +37,7 @@ const WhatsAppDashboard = () => {
   const [stats, setStats] = useState({
     all: 0,
     connected: 0,
-    notConnected: 0,
+    not_connected: 0,
     unsupported: 0
   });
 
@@ -182,7 +182,7 @@ const WhatsAppDashboard = () => {
     setStats({
       total: places.length,
       connected: places.filter(p => p.status === 'connected').length,
-      notConnected: places.filter(p => p.status === 'not_connected').length,
+      not_connected: places.filter(p => p.status === 'not_connected').length,
       unsupported: places.filter(p => p.status === 'unsupported').length
     });
   }, [places]);
@@ -239,7 +239,7 @@ const WhatsAppDashboard = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
               <StatsCard label="الإجمالي" value={stats.all} color="blue" />
               <StatsCard label="متصل" value={stats.connected} color="green" />
-              <StatsCard label="غير متصل" value={stats.not_connected} color="yellow" />
+              <StatsCard label="غير متصل" value={stats.not_connected} color="amber" />
               <StatsCard label="غير مدعوم" value={stats.unsupported} color="red" />
             </div>
           )}
