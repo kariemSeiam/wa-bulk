@@ -1,5 +1,5 @@
 {
-  "name": "ramadan-store-admin",
+  "name": "wa-bulk",
   "private": true,
   "version": "1.0.1",
   "type": "module",
@@ -11,7 +11,7 @@
     "predeploy": "vite build",
     "deploy": "gh-pages -d dist"
   },
-  "homepage": "https://kariemSeiam.github.io/ramadan-store-admin",
+  "homepage": "https://kariemSeiam.github.io/wa-bulk",
   "dependencies": {
     "@tailwindcss/forms": "^0.5.9",
     "autoprefixer": "^10.4.20",
