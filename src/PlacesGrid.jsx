@@ -1,90 +1,117 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
     MessageCircle, Phone, Facebook, Check, AlertTriangle, Loader2,
-    Copy, CheckCircle, ExternalLink, ChevronLeft
+    Copy, CheckCircle, ExternalLink, ChevronLeft, X, Upload
 } from 'lucide-react';
-
-import _ from 'lodash';
-
-import { X, Upload } from 'lucide-react';
-
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 const PlaceCard = ({ place, onUpdateStatus, onSendMessage }) => {
+    const { getAnimationClass, isRTL, getRTLClass } = useTheme();
     const [copiedPhone, setCopiedPhone] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
 
     const copyToClipboard = async (text) => {
-        await navigator.clipboard.writeText(text);
-        setCopiedPhone(true);
-        setTimeout(() => setCopiedPhone(false), 2000);
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopiedPhone(true);
+            setTimeout(() => setCopiedPhone(false), 2000);
+        } catch (error) {
+            console.error('Failed to copy:', error);
+        }
     };
 
+    const getStatusConfig = (status) => {
+        const configs = {
+            connected: {
+                bg: 'bg-light-success-50 dark:bg-dark-success-200/10',
+                text: 'text-light-success-700 dark:text-dark-success-400',
+                border: 'border-light-success-200 dark:border-dark-success-600/30',
+                label: 'متصل',
+                glow: 'shadow-light-success-500/10 dark:shadow-dark-success-500/20'
+            },
+            unsupported: {
+                bg: 'bg-light-error-50 dark:bg-dark-error-200/10',
+                text: 'text-light-error-700 dark:text-dark-error-400',
+                border: 'border-light-error-200 dark:border-dark-error-600/30',
+                label: 'غير مدعوم',
+                glow: 'shadow-light-error-500/10 dark:shadow-dark-error-500/20'
+            },
+            not_connected: {
+                bg: 'bg-light-warning-50 dark:bg-dark-warning-200/10',
+                text: 'text-light-warning-700 dark:text-dark-warning-400',
+                border: 'border-light-warning-200 dark:border-dark-warning-600/30',
+                label: 'غير متصل',
+                glow: 'shadow-light-warning-500/10 dark:shadow-dark-warning-500/20'
+            }
+        };
+        return configs[status] || configs.not_connected;
+    };
+
+    const statusConfig = getStatusConfig(place.status);
+
     return (
-        <div
+        <article
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className={`group relative isolate bg-gradient-to-br 
-                 from-gray-900/90 via-gray-800/90 to-gray-900/90
-                 backdrop-blur-xl border border-gray-800/50 rounded-3xl 
-                 overflow-hidden transition-all duration-500 
-                 hover:scale-[1.02] hover:shadow-2xl
-                 ${place.status === 'not_connected' ? 'ring-2 ring-yellow-500/20' : ''}
-                 hover:border-blue-500/20 hover:shadow-blue-500/5`}
+            className={`
+                group relative bg-surface-primary border border-light dark:border-dark-border-light
+                rounded-3xl overflow-hidden transition-all duration-500 ease-out-quart
+                hover:scale-102 hover:shadow-medium ${statusConfig.glow}
+                backdrop-blur-sm ${getAnimationClass('animate-fade-in-up')}
+            `}
+            role="article"
+            aria-labelledby={`place-name-${place.id}`}
         >
-            {/* Dynamic Background Glow */}
-            <div className={`absolute inset-0 opacity-0 group-hover:opacity-20 
-                      transition-opacity duration-500 ${place.status === 'connected'
-                    ? 'bg-gradient-conic from-green-500/30 via-transparent to-green-500/30' :
-                    place.status === 'unsupported'
-                        ? 'bg-gradient-conic from-red-500/30 via-transparent to-red-500/30' :
-                        'bg-gradient-conic from-yellow-500/30 via-transparent to-yellow-500/30'
-                }`} />
-
-            {/* Status Indicator Light */}
-            <div className={`absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 
-                      rounded-full text-sm border backdrop-blur-lg 
-                      transition-all duration-300 ${place.status === 'connected'
-                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' :
-                    place.status === 'unsupported'
-                        ? 'bg-red-500/10 text-red-400 border-red-500/30' :
-                        'bg-amber-500/10 text-amber-400 border-amber-500/30'
-                }`}>
-                <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
-                <span>{
-                    place.status === 'connected' ? 'متصل' :
-                        place.status === 'unsupported' ? 'غير مدعوم' :
-                            'غير متصل'
-                }</span>
+            {/* Status Indicator */}
+            <div className={`
+                absolute top-4 ${getRTLClass('left-4', 'right-4')} 
+                flex items-center gap-2 px-3 py-1.5 rounded-full text-sm 
+                ${statusConfig.bg} ${statusConfig.text} border ${statusConfig.border}
+                backdrop-blur-sm transition-all duration-300
+            `}>
+                <span className="w-2 h-2 rounded-full bg-current animate-pulse-soft" />
+                <span className="font-medium">{statusConfig.label}</span>
             </div>
 
             {/* Main Content */}
             <div className="relative p-6 space-y-6">
                 {/* Header */}
-                <div className="space-y-4">
-                    <h3 className="font-medium text-md text-white group-hover:text-blue-400 
-                       transition-colors line-clamp-2 pt-[-10px] ">
+                <div className="space-y-4 pt-8">
+                    <h3 
+                        id={`place-name-${place.id}`}
+                        className="font-semibold text-lg text-primary group-hover:text-light-primary-600 dark:group-hover:text-dark-primary-400 
+                                   transition-colors duration-300 line-clamp-2"
+                    >
                         {place.name}
                     </h3>
 
                     {/* Contact Info */}
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         <button
                             onClick={() => copyToClipboard(place.phone)}
-                            className="flex items-center gap-2 w-full text-gray-400 
-                       bg-gray-800/40 hover:bg-gray-800/60 px-4 py-2.5 
-                       rounded-xl text-sm transition-all group/phone
-                       relative overflow-hidden"
+                            className="
+                                flex items-center gap-3 w-full text-secondary 
+                                bg-surface-secondary border border-light dark:border-dark-border-light
+                                hover:bg-surface-tertiary px-4 py-3 rounded-2xl text-sm 
+                                transition-all duration-300 group/phone relative overflow-hidden
+                                focus:outline-none focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                            "
+                            aria-label={`نسخ رقم الهاتف ${place.phone}`}
+                            title="انقر لنسخ رقم الهاتف"
                         >
                             <Phone size={16} className="shrink-0" />
-                            <span className="font-mono flex-1 text-right">{place.phone}</span>
-                            <div className={`absolute inset-0 bg-green-500/10 
-                           transition-transform duration-500 ease-out
-                           ${copiedPhone ? 'translate-x-0' : 'translate-x-full'}`} />
+                            <span className={`font-mono flex-1 ${getRTLClass('text-left', 'text-right')}`}>
+                                {place.phone}
+                            </span>
+                            <div className={`
+                                absolute inset-0 bg-light-success-500/10 dark:bg-dark-success-500/10
+                                transition-transform duration-500 ease-out
+                                ${copiedPhone ? 'translate-x-0' : 'translate-x-full'}
+                            `} />
                             {copiedPhone ? (
-                                <CheckCircle size={16} className="text-green-400 shrink-0 relative" />
+                                <CheckCircle size={16} className="text-light-success-600 dark:text-dark-success-400 shrink-0 relative" />
                             ) : (
-                                <Copy size={16} className="opacity-0 group-hover/phone:opacity-100 
-                                       transition-opacity relative" />
+                                <Copy size={16} className="opacity-0 group-hover/phone:opacity-100 transition-opacity relative" />
                             )}
                         </button>
 
@@ -93,102 +120,132 @@ const PlaceCard = ({ place, onUpdateStatus, onSendMessage }) => {
                                 href={place.facebook_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-2 text-blue-400 
-                         bg-blue-500/10 hover:bg-blue-500/20 px-4 py-2.5 
-                         rounded-xl text-sm transition-all group/fb"
+                                className="
+                                    flex items-center gap-3 text-light-primary-600 dark:text-dark-primary-400
+                                    bg-light-primary-50 dark:bg-dark-primary-200/10 
+                                    hover:bg-light-primary-100 dark:hover:bg-dark-primary-200/20 
+                                    border border-light-primary-200 dark:border-dark-primary-600/30
+                                    px-4 py-3 rounded-2xl text-sm transition-all duration-300 group/fb
+                                    focus:outline-none focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                                "
+                                aria-label="فتح صفحة الفيسبوك"
                             >
                                 <Facebook size={16} className="shrink-0" />
-                                <span className="flex-1 text-right">صفحة فيسبوك</span>
-                                <ExternalLink size={14} className="opacity-0 group-hover/fb:opacity-100 
-                                               transition-opacity" />
+                                <span className="truncate">صفحة الفيسبوك</span>
+                                <ExternalLink size={14} className="opacity-0 group-hover/fb:opacity-100 transition-opacity" />
                             </a>
                         )}
                     </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="space-y-3 pt-2">
-                    <button
-                        onClick={() => onSendMessage(place)}
-                        className="w-full bg-gradient-to-r from-green-600 to-green-500 
-                     hover:from-green-500 hover:to-green-400
-                     px-4 py-3 rounded-xl flex items-center justify-center gap-3 
-                     transition-all duration-300 shadow-lg shadow-green-500/20
-                     group/btn relative overflow-hidden"
-                    >
-                        {/* Animated Shine Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent 
-                         via-white/10 to-transparent -translate-x-full
-                         group-hover/btn:translate-x-full transition-transform 
-                         duration-1000 ease-in-out" />
-
-                        <MessageCircle size={18} className="shrink-0" />
-                        <span>تواصل عبر واتساب</span>
-                        <ChevronLeft size={18} className="shrink-0 opacity-0 
-                                          group-hover/btn:opacity-100 
-                                          transition-opacity" />
-                    </button>
-
-                    <div className="flex gap-2">
-                        {/* Success Button */}
+                {/* Actions */}
+                <div className="flex gap-3 pt-4 border-t border-light dark:border-dark-border-light">
+                    {place.status === 'not_connected' && (
+                        <>
+                            <button
+                                onClick={() => onUpdateStatus(place.id, 'connected')}
+                                className="
+                                    flex-1 bg-gradient-to-r from-light-success-500 to-light-success-600
+                                    dark:from-dark-success-600 dark:to-dark-success-700
+                                    text-white py-3 px-4 rounded-2xl flex items-center justify-center gap-2
+                                    hover:from-light-success-400 hover:to-light-success-500
+                                    dark:hover:from-dark-success-500 dark:hover:to-dark-success-600
+                                    transition-all duration-300 shadow-soft hover:shadow-glow
+                                    focus:outline-none focus:ring-2 focus:ring-light-success-500 dark:focus:ring-dark-success-500
+                                    font-medium
+                                "
+                                aria-label="تحديد كمتصل"
+                            >
+                                <Check size={16} />
+                                <span>متصل</span>
+                            </button>
+                            <button
+                                onClick={() => onUpdateStatus(place.id, 'unsupported')}
+                                className="
+                                    flex-1 bg-surface-secondary border border-light dark:border-dark-border-light
+                                    text-secondary hover:text-primary hover:bg-surface-tertiary
+                                    py-3 px-4 rounded-2xl flex items-center justify-center gap-2
+                                    transition-all duration-300 font-medium
+                                    focus:outline-none focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                                "
+                                aria-label="تحديد كغير مدعوم"
+                            >
+                                <X size={16} />
+                                <span>غير مدعوم</span>
+                            </button>
+                        </>
+                    )}
+                    
+                    {place.status === 'connected' && (
                         <button
-                            onClick={() => onUpdateStatus(place.id, 'connected')}
-                            className="flex-1 relative overflow-hidden group/success
-                       bg-gradient-to-br from-gray-800/50 to-gray-900/50
-                       hover:from-green-500/20 hover:to-green-600/20
-                       text-green-400 py-3 rounded-xl transition-all duration-300"
+                            onClick={() => onSendMessage(place)}
+                            className="
+                                w-full bg-gradient-to-r from-light-primary-500 to-light-primary-600
+                                dark:from-dark-primary-600 dark:to-dark-primary-700
+                                text-white py-3 px-4 rounded-2xl flex items-center justify-center gap-2
+                                hover:from-light-primary-400 hover:to-light-primary-500
+                                dark:hover:from-dark-primary-500 dark:hover:to-dark-primary-600
+                                transition-all duration-300 shadow-soft hover:shadow-glow
+                                focus:outline-none focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                                font-medium group/send
+                            "
+                            aria-label="إرسال رسالة واتساب"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent 
-                           via-green-400/10 to-transparent -translate-x-full
-                           group-hover/success:translate-x-full transition-transform 
-                           duration-1000 ease-in-out" />
-                            <Check size={18} className="mx-auto relative" />
+                            <MessageCircle size={16} />
+                            <span>إرسال رسالة</span>
+                            <ChevronLeft 
+                                size={16} 
+                                className={`
+                                    opacity-0 group-hover/send:opacity-100 transition-opacity
+                                    ${isRTL ? 'rotate-180' : ''}
+                                `}
+                            />
                         </button>
-
-                        {/* Alert Button */}
-                        <button
-                            onClick={() => onUpdateStatus(place.id, 'unsupported')}
-                            className="flex-1 relative overflow-hidden group/alert
-                       bg-gradient-to-br from-gray-800/50 to-gray-900/50
-                       hover:from-red-500/20 hover:to-red-600/20
-                       text-red-400 py-3 rounded-xl transition-all duration-300"
-                        >
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent 
-                           via-red-400/10 to-transparent -translate-x-full
-                           group-hover/alert:translate-x-full transition-transform 
-                           duration-1000 ease-in-out" />
-                            <AlertTriangle size={18} className="mx-auto relative" />
-                        </button>
-                    </div>
+                    )}
                 </div>
             </div>
-        </div>
+        </article>
     );
 };
-// StatusFilter component
+
+// Status Filter Component
 const StatusFilter = ({ counts, activeStatus, onStatusChange }) => {
-    const filters = [
-        { id: 'not_connected', label: 'غير متصل', color: 'amber' },
-        { id: 'connected', label: 'متصل', color: 'emerald' },
-        { id: 'all', label: 'الكل', color: 'blue' }
+    const { getAnimationClass, getRTLClass } = useTheme();
+    
+    const statusOptions = [
+        { key: 'not_connected', label: 'غير متصل', icon: AlertTriangle },
+        { key: 'connected', label: 'متصل', icon: Check },
+        { key: 'unsupported', label: 'غير مدعوم', icon: X }
     ];
 
     return (
-        <div className="flex flex-wrap gap-2 mb-6">
-            {filters.map(filter => (
+        <div className={`flex gap-3 overflow-x-auto hide-scrollbar pb-2 ${getAnimationClass('animate-slide-in-right')}`}>
+            {statusOptions.map(({ key, label, icon: Icon }) => (
                 <button
-                    key={filter.id}
-                    onClick={() => onStatusChange(filter.id)}
-                    className={`flex items-center gap-1 px-3 py-2 rounded-xl 
-                     transition-all duration-300 ${activeStatus === filter.id
-                            ? `bg-${filter.color}-500/20 text-${filter.color}-400 
-                 ring-1 ring-${filter.color}-500/30`
-                            : 'bg-gray-800/30 text-gray-400 hover:bg-gray-800/50'
-                        }`}
+                    key={key}
+                    onClick={() => onStatusChange(key)}
+                    className={`
+                        flex items-center gap-3 px-6 py-3 rounded-2xl whitespace-nowrap
+                        transition-all duration-300 ease-out-quart font-medium
+                        focus:outline-none focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                        ${activeStatus === key
+                            ? 'bg-gradient-to-r from-light-primary-500 to-light-primary-600 dark:from-dark-primary-600 dark:to-dark-primary-700 text-white shadow-soft'
+                            : 'bg-surface-secondary border border-light dark:border-dark-border-light text-secondary hover:bg-surface-tertiary hover:text-primary'
+                        }
+                    `}
+                    aria-pressed={activeStatus === key}
+                    aria-label={`تصفية حسب ${label}`}
                 >
-                    <span>{filter.label}</span>
-                    <span className="px-2 py-0.5 rounded-full bg-gray-900/30">
-                        {counts[filter.id] || 0}
+                    <Icon size={16} />
+                    <span>{label}</span>
+                    <span className={`
+                        px-2 py-1 rounded-full text-xs font-bold min-w-[24px] text-center
+                        ${activeStatus === key 
+                            ? 'bg-white/20 text-white' 
+                            : 'bg-light-primary-100 dark:bg-dark-primary-800 text-light-primary-700 dark:text-dark-primary-300'
+                        }
+                    `}>
+                        {counts[key] || 0}
                     </span>
                 </button>
             ))}
@@ -196,354 +253,157 @@ const StatusFilter = ({ counts, activeStatus, onStatusChange }) => {
     );
 };
 
-export const PlacesGrid = ({ selectedList, searchTerm, onUpdateStatus, onSendMessage, onStatsUpdate }) => {
-    const [places, setPlaces] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const [statusCounts, setStatusCounts] = useState({});
-    const [activeStatus, setActiveStatus] = useState('not_connected');
-    const loaderRef = useRef(null);
-    const loadingRef = useRef(false);
+// Main PlacesGrid Component
+export const PlacesGrid = ({ places, onUpdateStatus, onSendMessage }) => {
+    const { getAnimationClass, isRTL } = useTheme();
 
-    const fetchPlaces = useCallback(async (pageNum, isNewSearch = false) => {
-        if (!selectedList?.id || loadingRef.current) return;
-
-        try {
-            loadingRef.current = true;
-            setLoading(true);
-            setError(null);
-
-            const searchParams = new URLSearchParams({
-                page: pageNum,
-                per_page: 12,
-                status: activeStatus,
-                search: searchTerm || ''
-            });
-
-            const response = await fetch(
-                `https://wabulk.pythonanywhere.com/api/lists/${selectedList.id}/places?${searchParams}`
-            );
-
-            if (!response.ok) throw new Error('Failed to fetch places');
-
-            const data = await response.json();
-
-            setPlaces(prevPlaces => {
-                if (isNewSearch) return data.places;
-                const newPlaces = data.places.filter(
-                    newPlace => !prevPlaces.some(existingPlace => existingPlace.id === newPlace.id)
-                );
-                return [...prevPlaces, ...newPlaces];
-            });
-
-            setStatusCounts(data.status_counts);
-            setHasMore(data.pagination.has_next);
-
-            if (onStatsUpdate) {
-                onStatsUpdate(data.status_counts);
-            }
-
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-            loadingRef.current = false;
-        }
-    }, [selectedList?.id, searchTerm, activeStatus, onStatsUpdate]);
-
-    const handleStatusChange = useCallback((newStatus) => {
-        setActiveStatus(newStatus);
-        setPage(1);
-        setPlaces([]);
-        setHasMore(true);
-    }, []);
-
-    const handleUpdateStatus = async (placeId, newStatus) => {
-        try {
-            const success = await onUpdateStatus(placeId, newStatus);
-            if (success) {
-                setPlaces(prevPlaces => {
-                    const updatedPlaces = prevPlaces.filter(place => place.id !== placeId);
-
-                    if (updatedPlaces.length < 12 && hasMore) {
-                        setTimeout(() => setPage(prev => prev + 1), 300);
-                    }
-
-                    return updatedPlaces;
-                });
-
-                // Update counts
-                setStatusCounts(prev => ({
-                    ...prev,
-                    [activeStatus]: Math.max(0, prev[activeStatus] - 1),
-                    [newStatus]: prev[newStatus] + 1
-                }));
-
-                if (onStatsUpdate) {
-                    onStatsUpdate(prev => ({
-                        ...prev,
-                        [activeStatus]: Math.max(0, prev[activeStatus] - 1),
-                        [newStatus]: prev[newStatus] + 1
-                    }));
-                }
-            }
-        } catch (error) {
-            console.error('Error updating status:', error);
-        }
-    };
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            entries => {
-                const target = entries[0];
-                if (target.isIntersecting && hasMore && !loadingRef.current) {
-                    setTimeout(() => {
-                        setPage(prevPage => prevPage + 1);
-                    }, 100);
-                }
-            },
-            {
-                root: null,
-                rootMargin: '200px',
-                threshold: 0.1
-            }
-        );
-
-        const currentLoader = loaderRef.current;
-        if (currentLoader) {
-            observer.observe(currentLoader);
-        }
-
-        return () => {
-            if (currentLoader) {
-                observer.unobserve(currentLoader);
-            }
-        };
-    }, [hasMore]);
-
-    useEffect(() => {
-        setPage(1);
-        setPlaces([]);
-        setHasMore(true);
-        fetchPlaces(1, true);
-    }, [selectedList?.id, searchTerm, activeStatus]);
-
-    useEffect(() => {
-        if (page > 1) {
-            fetchPlaces(page, false);
-        }
-    }, [page]);
-
-    useEffect(() => {
-        const handleScroll = _.debounce(() => {
-            if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200) {
-                if (hasMore && !loadingRef.current) {
-                    setPage(prevPage => prevPage + 1);
-                }
-            }
-        }, 100);
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [hasMore]);
-
-    if (error) {
+    if (!places || places.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="relative mb-8">
-                    <div className="absolute inset-0 bg-red-500 blur-2xl opacity-20"></div>
-                    <div className="relative bg-red-500/10 p-6 rounded-full">
-                        <AlertTriangle size={56} className="text-red-400" />
+            <div className={`
+                text-center py-16 ${getAnimationClass('animate-fade-in-up')}
+            `}>
+                <div className="max-w-md mx-auto">
+                    <div className="w-16 h-16 mx-auto mb-6 bg-surface-secondary rounded-full flex items-center justify-center">
+                        <MessageCircle className="w-8 h-8 text-tertiary" />
                     </div>
+                    <h3 className="text-xl font-semibold text-primary mb-3">
+                        لا توجد أماكن للعرض
+                    </h3>
+                    <p className="text-secondary">
+                        جرب تغيير مرشحات البحث أو تحديث القائمة
+                    </p>
                 </div>
-                <h3 className="text-xl font-medium mb-3 text-red-400">حدث خطأ</h3>
-                <p className="text-gray-400 text-sm mb-8 max-w-md">{error}</p>
-                <button
-                    onClick={() => fetchPlaces(1, true)}
-                    className="bg-blue-600 px-8 py-3 rounded-full hover:bg-blue-700 
-                   transition-all duration-300 shadow-lg shadow-blue-500/20"
-                >
-                    إعادة المحاولة
-                </button>
             </div>
         );
     }
 
-    if (!selectedList) return null;
-
     return (
-        <div className="space-y-6" dir="rtl">
-            <StatusFilter
-                counts={statusCounts}
-                activeStatus={activeStatus}
-                onStatusChange={handleStatusChange}
-            />
-
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="space-y-6" dir={isRTL ? 'rtl' : 'ltr'}>
+            {/* Responsive Grid */}
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {places.map((place, index) => (
                     <div
                         key={place.id}
-                        className="transform transition-all duration-300 animate-fadeIn"
+                        className={`
+                            ${getAnimationClass('animate-fade-in-up')}
+                        `}
+                        style={{ animationDelay: `${index * 100}ms` }}
                     >
                         <PlaceCard
                             place={place}
-                            onUpdateStatus={handleUpdateStatus}
+                            onUpdateStatus={onUpdateStatus}
                             onSendMessage={onSendMessage}
                         />
                     </div>
                 ))}
             </div>
+        </div>
+    );
+};
 
-            <div ref={loaderRef} className="py-8 flex justify-center">
-                {loading && (
-                    <div className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 
-                       backdrop-blur-xl border border-gray-700/20 rounded-2xl p-6">
-                        <div className="flex items-center gap-4">
-                            <div className="relative">
-                                <div className="absolute inset-0 bg-blue-500 blur-xl opacity-20"></div>
-                                <Loader2 className="animate-spin text-blue-400 relative" size={24} />
-                            </div>
-                            <span className="text-lg">جاري التحميل...</span>
-                        </div>
-                    </div>
-                )}
-            </div>
+// Custom Form Components
+const CustomInput = ({ label, name, value, onChange, placeholder, disabled, type = 'text' }) => {
+    const { getRTLClass } = useTheme();
+    
+    return (
+        <div className="space-y-2">
+            <label className="text-sm font-medium text-secondary block">
+                {label}
+            </label>
+            <input
+                type={type}
+                name={name}
+                value={value}
+                onChange={onChange}
+                placeholder={placeholder}
+                disabled={disabled}
+                className={`
+                    w-full bg-surface-secondary border border-light dark:border-dark-border-light
+                    rounded-2xl px-4 py-3 text-primary placeholder-tertiary
+                    focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                    focus:border-transparent transition-all duration-300
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                    ${getRTLClass('text-left', 'text-right')}
+                `}
+                dir={getRTLClass('ltr', 'rtl')}
+            />
+        </div>
+    );
+};
 
-            {!loading && places.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="relative mb-8 animate-float">
-                        <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-20"></div>
-                        <div className="relative bg-blue-500/10 p-6 rounded-full">
-                            <MessageCircle size={56} className="text-blue-400" />
-                        </div>
-                    </div>
-                    <h3 className="text-xl font-medium mb-3">لا توجد نتائج</h3>
-                    <p className="text-gray-400 text-sm max-w-md">
-                        {searchTerm
-                            ? 'لا توجد نتائج تطابق بحثك'
-                            : `لا توجد أماكن ${activeStatus === 'connected' ? 'متصلة' :
-                                activeStatus === 'unsupported' ? 'غير مدعومة' :
-                                    'غير متصلة'
-                            }`
-                        }
-                    </p>
-                </div>
+const CustomTextarea = ({ label, name, value, onChange, placeholder, disabled, hint }) => {
+    const { getRTLClass } = useTheme();
+    
+    return (
+        <div className="space-y-2">
+            <label className="text-sm font-medium text-secondary block">
+                {label}
+            </label>
+            <textarea
+                name={name}
+                value={value}
+                onChange={onChange}
+                placeholder={placeholder}
+                disabled={disabled}
+                rows={4}
+                className={`
+                    w-full bg-surface-secondary border border-light dark:border-dark-border-light
+                    rounded-2xl px-4 py-3 text-primary placeholder-tertiary
+                    focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                    focus:border-transparent transition-all duration-300 resize-none
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                    ${getRTLClass('text-left', 'text-right')}
+                `}
+                dir={getRTLClass('ltr', 'rtl')}
+            />
+            {hint && (
+                <p className="text-xs text-tertiary">
+                    {hint}
+                </p>
             )}
         </div>
     );
 };
 
-const processPlaces = (places) => {
-    return places.map(place => ({
-        name: place.name,
-        phone: formatPhoneNumber(place.phone_number),
-        facebook_url: place.url || ''
-    })).filter(place => place.phone);
-};
-
-const formatPhoneNumber = (phone) => {
-    if (!phone) return null;
-    const cleaned = phone.replace(/\D/g, '');
-
-    if (cleaned.startsWith('01')) {
-        return '+2' + cleaned;
-    } else if (cleaned.startsWith('201')) {
-        return '+' + cleaned;
-    } else if (cleaned.startsWith('2001')) {
-        return '+' + cleaned.slice(2);
-    }
-    return null;
-};
-
-const CustomButton = ({
-    children,
-    onClick,
-    disabled,
-    variant = 'primary',
-    className = ''
-}) => {
-    const baseStyles = "w-full py-3 rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed";
+const CustomButton = ({ onClick, disabled, variant = 'primary', children, className = '' }) => {
+    const { getAnimationClass } = useTheme();
+    
     const variants = {
-        primary: "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 shadow-lg shadow-blue-500/20",
-        secondary: "bg-gray-800/50 hover:bg-gray-700/50"
+        primary: `
+            bg-gradient-to-r from-light-primary-500 to-light-primary-600
+            dark:from-dark-primary-600 dark:to-dark-primary-700
+            hover:from-light-primary-400 hover:to-light-primary-500
+            dark:hover:from-dark-primary-500 dark:hover:to-dark-primary-600
+            text-white shadow-soft hover:shadow-glow
+        `,
+        secondary: `
+            bg-surface-secondary border border-light dark:border-dark-border-light
+            text-secondary hover:text-primary hover:bg-surface-tertiary
+        `
     };
 
     return (
         <button
-            type="button"
             onClick={onClick}
             disabled={disabled}
-            className={`${baseStyles} ${variants[variant]} ${className}`}
+            className={`
+                w-full py-3 px-4 rounded-2xl flex items-center justify-center gap-2
+                transition-all duration-300 font-medium
+                focus:outline-none focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                disabled:opacity-50 disabled:cursor-not-allowed
+                ${variants[variant]}
+                ${getAnimationClass('hover:scale-102')}
+                ${className}
+            `}
         >
             {children}
         </button>
     );
 };
 
-const CustomInput = ({
-    label,
-    name,
-    value,
-    onChange,
-    placeholder,
-    disabled,
-    type = 'text',
-    className = ''
-}) => (
-    <div>
-        <label className="text-sm text-gray-400 block mb-1.5">
-            {label}
-        </label>
-        <input
-            type={type}
-            name={name}
-            value={value}
-            onChange={onChange}
-            placeholder={placeholder}
-            disabled={disabled}
-            className={`w-full bg-gray-800/50 border border-gray-700/30 
-                   rounded-xl p-3 text-sm focus:ring-2 
-                   focus:ring-blue-500/50 transition-all
-                   placeholder:text-gray-600 disabled:opacity-50 ${className}`}
-        />
-    </div>
-);
-
-const CustomTextarea = ({
-    label,
-    name,
-    value,
-    onChange,
-    placeholder,
-    disabled,
-    hint,
-    className = ''
-}) => (
-    <div>
-        <label className="text-sm text-gray-400 block mb-1.5">
-            {label}
-        </label>
-        <textarea
-            name={name}
-            value={value}
-            onChange={onChange}
-            placeholder={placeholder}
-            disabled={disabled}
-            className={`w-full bg-gray-800/50 border border-gray-700/30 
-                   rounded-xl p-4 text-sm focus:ring-2 
-                   focus:ring-blue-500/50 transition-all h-32 
-                   resize-none placeholder:text-gray-600
-                   disabled:opacity-50 ${className}`}
-        />
-        {hint && (
-            <p className="text-xs text-gray-500 mt-2">{hint}</p>
-        )}
-    </div>
-);
-
+// Add List Dialog Component
 export const AddListDialog = ({ onClose, onSuccess }) => {
+    const { getAnimationClass, isRTL } = useTheme();
     const [formData, setFormData] = useState({
         name: '',
         messageTemplate: '',
@@ -561,148 +421,156 @@ export const AddListDialog = ({ onClose, onSuccess }) => {
         const file = event.target.files?.[0];
         if (!file) return;
 
-        setLoading(true);
-        setError(null);
+        if (!formData.name || !formData.messageTemplate) {
+            setError('يرجى ملء جميع الحقول المطلوبة');
+            return;
+        }
 
         try {
-            const text = await file.text();
-            const places = JSON.parse(text);
-            const processedPlaces = processPlaces(places);
+            setLoading(true);
+            setError(null);
 
-            if (processedPlaces.length === 0) {
-                throw new Error('No valid places found in file');
-            }
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const places = JSON.parse(e.target.result);
 
-            const response = await fetch('https://wabulk.pythonanywhere.com/api/lists', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: formData.name,
-                    message_template: formData.messageTemplate,
-                    places: processedPlaces
-                })
-            });
+                    const payload = {
+                        name: formData.name,
+                        message_template: formData.messageTemplate,
+                        places: places
+                    };
 
-            if (!response.ok) {
-                throw new Error('Failed to upload list');
-            }
+                    const response = await fetch('https://wabulk.pythonanywhere.com/api/lists', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
 
-            const data = await response.json();
-            onSuccess(data);
-            onClose();
-        } catch (err) {
-            setError(err.message || 'Failed to process file');
+                    if (response.ok) {
+                        onSuccess();
+                    } else {
+                        const errorData = await response.json();
+                        setError(errorData.message || 'حدث خطأ أثناء إنشاء القائمة');
+                    }
+                } catch (parseError) {
+                    setError('ملف JSON غير صالح');
+                }
+            };
+            reader.readAsText(file);
+        } catch (error) {
+            setError('حدث خطأ أثناء قراءة الملف');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
-                className="absolute inset-0 bg-gray-900/95 backdrop-blur-xl"
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={onClose}
+                aria-hidden="true"
             />
-            <div className="relative min-h-screen flex items-end sm:items-center justify-center p-4">
-                <div className="w-full max-w-lg animate-in slide-in-from-bottom duration-300">
-                    <div className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 
-                           backdrop-blur-xl border border-gray-700/20 rounded-3xl 
-                           shadow-2xl">
-                        <div className="p-6 space-y-6">
-                            {/* Header */}
-                            <div className="flex justify-between items-center">
-                                <h3 className="text-xl font-bold bg-gradient-to-r from-gray-100 
-                                to-gray-300 bg-clip-text text-transparent">
-                                    إضافة قائمة جديدة
-                                </h3>
-                                <button
-                                    onClick={onClose}
-                                    className="p-2 rounded-xl hover:bg-gray-800/50 
-                               transition-colors group"
-                                >
-                                    <X size={20} className="text-gray-400 group-hover:text-gray-200 
-                                          transition-colors" />
-                                </button>
-                            </div>
+            <div className={`
+                relative w-full max-w-lg bg-surface-primary border border-light dark:border-dark-border-light
+                rounded-3xl shadow-strong p-6 ${getAnimationClass('animate-scale-in')}
+            `}>
+                {/* Header */}
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-primary">
+                        إضافة قائمة جديدة
+                    </h3>
+                    <button
+                        onClick={onClose}
+                        className="
+                            p-2 rounded-xl hover:bg-surface-secondary 
+                            transition-colors group focus:outline-none
+                            focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                        "
+                        aria-label="إغلاق"
+                    >
+                        <X size={20} className="text-tertiary group-hover:text-primary transition-colors" />
+                    </button>
+                </div>
 
-                            {/* Error Message */}
-                            {error && (
-                                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-sm text-red-400">
-                                    {error}
-                                </div>
-                            )}
+                {/* Error Message */}
+                {error && (
+                    <div className="bg-light-error-50 dark:bg-dark-error-200/10 border border-light-error-200 dark:border-dark-error-600/30 rounded-2xl p-4 mb-6">
+                        <p className="text-sm text-light-error-700 dark:text-dark-error-400">
+                            {error}
+                        </p>
+                    </div>
+                )}
 
-                            {/* Form */}
-                            <div className="space-y-4">
-                                <CustomInput
-                                    label="اسم القائمة"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    placeholder="اكتب اسم القائمة..."
-                                    disabled={loading}
-                                />
+                {/* Form */}
+                <div className="space-y-6">
+                    <CustomInput
+                        label="اسم القائمة"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="اكتب اسم القائمة..."
+                        disabled={loading}
+                    />
 
-                                <div>
-                                    <label className="text-sm text-gray-400 block mb-1.5">
-                                        ملف JSON
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type="file"
-                                            id="file-upload"
-                                            accept=".json"
-                                            onChange={handleFileUpload}
-                                            disabled={loading}
-                                            className="hidden"
-                                        />
-                                        <label
-                                            htmlFor="file-upload"
-                                            className={`w-full bg-gray-800/50 border border-gray-700/30 
-                                  rounded-xl p-4 text-sm flex items-center justify-center 
-                                  gap-3 cursor-pointer hover:bg-gray-800/70 
-                                  transition-all group ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                        >
-                                            <Upload size={18} className="text-gray-400 group-hover:text-gray-200 
-                                                   transition-colors" />
-                                            <span className="text-gray-400 group-hover:text-gray-200">
-                                                اختر ملف JSON
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-secondary block">
+                            ملف JSON
+                        </label>
+                        <input
+                            type="file"
+                            id="file-upload"
+                            accept=".json"
+                            onChange={handleFileUpload}
+                            disabled={loading}
+                            className="hidden"
+                        />
+                        <label
+                            htmlFor="file-upload"
+                            className={`
+                                w-full bg-surface-secondary border border-light dark:border-dark-border-light
+                                rounded-2xl p-4 text-sm flex items-center justify-center gap-3
+                                cursor-pointer hover:bg-surface-tertiary transition-all group
+                                ${loading ? 'opacity-50 cursor-not-allowed' : ''}
+                            `}
+                        >
+                            <Upload size={18} className="text-secondary group-hover:text-primary transition-colors" />
+                            <span className="text-secondary group-hover:text-primary font-medium">
+                                اختر ملف JSON
+                            </span>
+                        </label>
+                    </div>
 
-                                <CustomTextarea
-                                    label="قالب الرسالة"
-                                    name="messageTemplate"
-                                    value={formData.messageTemplate}
-                                    onChange={handleChange}
-                                    placeholder="اكتب قالب الرسالة هنا..."
-                                    disabled={loading}
-                                    hint="المتغيرات المتاحة: ${'{name}'}, ${'{phone_number}'}, ${'{facebook_url}'}"
-                                />
+                    <CustomTextarea
+                        label="قالب الرسالة"
+                        name="messageTemplate"
+                        value={formData.messageTemplate}
+                        onChange={handleChange}
+                        placeholder="اكتب قالب الرسالة هنا..."
+                        disabled={loading}
+                        hint="المتغيرات المتاحة: {name}, {phone_number}, {facebook_url}"
+                    />
 
-                                <div className="pt-4 space-y-3">
-                                    <CustomButton
-                                        onClick={() => document.getElementById('file-upload').click()}
-                                        disabled={loading || !formData.name || !formData.messageTemplate}
-                                        variant="primary"
-                                    >
-                                        <span>
-                                            {loading ? 'جاري الرفع...' : 'رفع القائمة'}
-                                        </span>
-                                    </CustomButton>
-
-                                    <CustomButton
-                                        onClick={onClose}
-                                        disabled={loading}
-                                        variant="secondary"
-                                    >
-                                        <span>إلغاء</span>
-                                    </CustomButton>
-                                </div>
-                            </div>
-                        </div>
+                    <div className="flex gap-3 pt-4">
+                        <CustomButton
+                            onClick={() => document.getElementById('file-upload').click()}
+                            disabled={loading || !formData.name || !formData.messageTemplate}
+                            variant="primary"
+                        >
+                            <Upload size={16} />
+                            <span>
+                                {loading ? 'جاري الرفع...' : 'رفع القائمة'}
+                            </span>
+                        </CustomButton>
+                        <CustomButton
+                            onClick={onClose}
+                            disabled={loading}
+                            variant="secondary"
+                            className="w-auto px-6"
+                        >
+                            <span>إلغاء</span>
+                        </CustomButton>
                     </div>
                 </div>
             </div>

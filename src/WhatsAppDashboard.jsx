@@ -4,61 +4,94 @@ import {
   Upload, Loader2, Facebook, Phone, MessageSquare,
   ChevronRight, Settings, MoreVertical, ArrowUpDown
 } from 'lucide-react';
-import {AddListDialog, PlacesGrid } from './PlacesGrid.jsx'; // Import the new PlacesGrid component
-import Logo from './components/Logo.jsx'; // Import the new Logo component
+import { useTheme } from '../contexts/ThemeContext.jsx';
+import { AddListDialog, PlacesGrid } from './PlacesGrid.jsx';
+import Logo from './components/Logo.jsx';
+import ThemeToggle from './components/ThemeToggle.jsx';
 
-
-
-// Enhanced Stats Card Component
-const StatsCard = ({ label, value, color = 'blue' }) => {
+// Enhanced Stats Card Component with Theme Support
+const StatsCard = ({ label, value, color = 'primary', icon: Icon }) => {
+  const { getAnimationClass, isDark } = useTheme();
+  
   const colorVariants = {
-    blue: {
-      bg: 'bg-blue-500/10',
-      text: 'text-blue-400',
-      border: 'border-blue-500/20',
-      glow: 'shadow-blue-500/10'
+    primary: {
+      bg: `bg-light-primary-50 dark:bg-dark-primary-200/10`,
+      text: `text-light-primary-700 dark:text-dark-primary-400`,
+      border: `border-light-primary-200 dark:border-dark-primary-600/30`,
+      glow: `shadow-light-primary-500/10 dark:shadow-dark-primary-500/20`,
+      accent: `bg-light-primary-500 dark:bg-dark-primary-600`
     },
-    green: {
-      bg: 'bg-green-500/10',
-      text: 'text-green-400',
-      border: 'border-green-500/20',
-      glow: 'shadow-green-500/10'
+    success: {
+      bg: `bg-light-success-50 dark:bg-dark-success-200/10`,
+      text: `text-light-success-700 dark:text-dark-success-400`,
+      border: `border-light-success-200 dark:border-dark-success-600/30`,
+      glow: `shadow-light-success-500/10 dark:shadow-dark-success-500/20`,
+      accent: `bg-light-success-500 dark:bg-dark-success-600`
     },
-    amber: {
-      bg: 'bg-amber-500/10',
-      text: 'text-amber-400',
-      border: 'border-amber-500/20',
-      glow: 'shadow-amber-500/10'
+    warning: {
+      bg: `bg-light-warning-50 dark:bg-dark-warning-200/10`,
+      text: `text-light-warning-700 dark:text-dark-warning-400`,
+      border: `border-light-warning-200 dark:border-dark-warning-600/30`,
+      glow: `shadow-light-warning-500/10 dark:shadow-dark-warning-500/20`,
+      accent: `bg-light-warning-500 dark:bg-dark-warning-600`
     },
-    red: {
-      bg: 'bg-red-500/10',
-      text: 'text-red-400',
-      border: 'border-red-500/20',
-      glow: 'shadow-red-500/10'
+    error: {
+      bg: `bg-light-error-50 dark:bg-dark-error-200/10`,
+      text: `text-light-error-700 dark:text-dark-error-400`,
+      border: `border-light-error-200 dark:border-dark-error-600/30`,
+      glow: `shadow-light-error-500/10 dark:shadow-dark-error-500/20`,
+      accent: `bg-light-error-500 dark:bg-dark-error-600`
     }
   };
   
-  const variant = colorVariants[color] || colorVariants.blue;
+  const variant = colorVariants[color] || colorVariants.primary;
   
   return (
-    <div className={`${variant.bg} px-4 py-3 rounded-xl border ${variant.border} 
-                     backdrop-blur-sm transition-all duration-300 
-                     hover:scale-105 hover:shadow-lg ${variant.glow}
-                     group cursor-pointer`}>
-      <div className={`${variant.text} text-sm mb-1 font-medium transition-colors
-                      group-hover:brightness-110`}>
-        {label}
+    <div 
+      className={`
+        ${variant.bg} border ${variant.border}
+        rounded-2xl p-4 transition-all duration-300 ease-out-quart
+        hover:scale-102 hover:shadow-medium ${variant.glow}
+        group cursor-pointer backdrop-blur-sm
+        ${getAnimationClass('hover:animate-float')}
+      `}
+      role="button"
+      tabIndex={0}
+      aria-label={`${label}: ${value}`}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <div className={`${variant.text} text-sm font-medium`}>
+          {label}
+        </div>
+        {Icon && (
+          <div className={`w-8 h-8 rounded-xl ${variant.accent}/10 flex items-center justify-center`}>
+            <Icon className={`w-4 h-4 ${variant.text}`} />
+          </div>
+        )}
       </div>
-      <div className="text-xl font-bold text-white group-hover:text-white/90 transition-colors">
+      <div className="text-2xl font-bold text-primary mb-1 group-hover:scale-105 transition-transform duration-300">
         {value}
       </div>
-      <div className={`w-full h-0.5 ${variant.bg} rounded-full mt-2 opacity-0 
-                      group-hover:opacity-100 transition-opacity duration-300`}></div>
+      <div className={`w-full h-1 ${variant.accent}/20 rounded-full overflow-hidden`}>
+        <div className={`
+          h-full ${variant.accent} rounded-full transition-all duration-700 ease-out
+          group-hover:w-full
+        `} style={{ width: '60%' }} />
+      </div>
     </div>
   );
 };
 
 const WhatsAppDashboard = () => {
+  const { 
+    isDark, 
+    isRTL, 
+    getAnimationClass, 
+    getThemeClass, 
+    getRTLClass,
+    shouldReduceMotion 
+  } = useTheme();
+
   // State Management
   const [places, setPlaces] = useState([]);
   const [lists, setLists] = useState([]);
@@ -67,27 +100,27 @@ const WhatsAppDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddListDialog, setShowAddListDialog] = useState(false);
   const [showEditMessageDialog, setShowEditMessageDialog] = useState(false);
+  const [showThemePanel, setShowThemePanel] = useState(false);
   const [messageTemplate, setMessageTemplate] = useState('');
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [newListData, setNewListData] = useState({
     name: '',
     messageTemplate: '',
     file: null
   });
 
-  // Keep stats state but update it differently
+  // Stats state
   const [stats, setStats] = useState({
-    all: 0,
+    total: 0,
     connected: 0,
     not_connected: 0,
     unsupported: 0
   });
 
   // Handler for WhatsApp action
-  const handleSendMessage = (place) => {
+  const handleSendMessage = useCallback((place) => {
     const encodedMessage = encodeURIComponent(place.formatted_message);
     window.open(`https://wa.me/${place.phone}?text=${encodedMessage}`, '_blank');
-  };
+  }, []);
 
   // Update place status handler
   const updatePlaceStatus = async (placeId, newStatus) => {
@@ -98,102 +131,54 @@ const WhatsAppDashboard = () => {
         body: JSON.stringify({ status: newStatus })
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to update status');
+      if (response.ok) {
+        setPlaces(prevPlaces =>
+          prevPlaces.map(place =>
+            place.id === placeId ? { ...place, status: newStatus } : place
+          )
+        );
       }
-      
-      // We'll let the PlacesGrid component handle its own state update
-      return true;
     } catch (error) {
-      console.error('Error updating status:', error);
-      return false;
+      console.error('Error updating place status:', error);
     }
   };
 
-  // Fetch lists (keep as is)
-  const fetchLists = async () => {
-    setLoading(true);
+  // Fetch lists
+  const fetchLists = useCallback(async () => {
     try {
       const response = await fetch('https://wabulk.pythonanywhere.com/api/lists');
       const data = await response.json();
-      setLists(data.lists);
+      setLists(data);
     } catch (error) {
       console.error('Error fetching lists:', error);
     }
-    setLoading(false);
-  };
+  }, []);
 
-  // Handle file upload (keep as is)
-  const handleFileUpload = async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const places = JSON.parse(e.target.result);
-
-        const payload = {
-          name: newListData.name,
-          message_template: newListData.messageTemplate,
-          places: places
-        };
-
-        const response = await fetch('https://wabulk.pythonanywhere.com/api/lists', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (response.ok) {
-          setShowAddListDialog(false);
-          fetchLists();
-          setNewListData({ name: '', messageTemplate: '', file: null });
-        }
-      };
-      reader.readAsText(file);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
-  };
-
-  // Update message template (keep as is)
+  // Update message template
   const updateMessageTemplate = async () => {
     if (!selectedList) return;
-
+    
     try {
-      const response = await fetch(`https://wabulk.pythonanywhere.com/api/lists/${selectedList.id}/message`, {
+      setLoading(true);
+      const response = await fetch(`https://wabulk.pythonanywhere.com/api/lists/${selectedList.id}/message-template`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message_template: messageTemplate })
       });
 
       if (response.ok) {
+        setSelectedList(prev => ({ ...prev, message_template: messageTemplate }));
         setShowEditMessageDialog(false);
-        // Don't need to fetch places here anymore as PlacesGrid will handle it
+        await fetchPlaces(selectedList.id);
       }
     } catch (error) {
       console.error('Error updating message template:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Stats update callback
-  const handleStatsUpdate = useCallback((newStats) => {
-    setStats(newStats);
-  }, []);
-
-  // Effects
-  useEffect(() => {
-    fetchLists();
-  }, []);
-
-  useEffect(() => {
-    if (selectedList) {
-      setMessageTemplate(selectedList.message_template);
-    }
-  }, [selectedList]);
-
-  
+  // Fetch places
   const fetchPlaces = useCallback(async (listId) => {
     if (!listId) return;
     setLoading(true);
@@ -207,11 +192,10 @@ const WhatsAppDashboard = () => {
     setLoading(false);
   }, []);
 
-
   // Effects
   useEffect(() => {
     fetchLists();
-  }, []);
+  }, [fetchLists]);
 
   useEffect(() => {
     if (selectedList) {
@@ -230,179 +214,228 @@ const WhatsAppDashboard = () => {
   }, [places]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black 
-                    text-white overflow-x-hidden relative"
-         dir="rtl">
+    <div 
+      className={`
+        min-h-screen bg-surface-primary text-primary
+        transition-all duration-500 ease-out-quart
+        ${getRTLClass('', 'rtl')}
+      `}
+      dir={isRTL ? 'rtl' : 'ltr'}
+    >
       {/* Animated background elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-green-500/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl animate-pulse" 
-             style={{animationDelay: '1s'}}></div>
-        <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-cyan-500/5 rounded-full blur-3xl animate-pulse"
-             style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/3 right-10 w-20 h-20 bg-emerald-500/5 rounded-full blur-2xl animate-pulse"
-             style={{animationDelay: '0.5s'}}></div>
+      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-30">
+        <div className={`
+          absolute top-20 ${getRTLClass('left-10', 'right-10')} w-32 h-32 
+          bg-light-primary-500/5 dark:bg-dark-primary-500/10 rounded-full blur-3xl
+          ${getAnimationClass('animate-pulse-soft')}
+        `} />
+        <div className={`
+          absolute top-40 ${getRTLClass('right-20', 'left-20')} w-24 h-24 
+          bg-light-accent-500/5 dark:bg-dark-accent-500/10 rounded-full blur-2xl
+          ${getAnimationClass('animate-pulse-soft')}
+        `} style={{ animationDelay: '1s' }} />
+        <div className={`
+          absolute bottom-20 left-1/3 w-40 h-40 
+          bg-light-success-500/5 dark:bg-dark-success-500/10 rounded-full blur-3xl
+          ${getAnimationClass('animate-pulse-soft')}
+        `} style={{ animationDelay: '2s' }} />
       </div>
       
       <main className="container mx-auto px-4 pb-6 relative z-10">
         {/* Header Section */}
-        <div className="container mx-auto py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo and Navigation on Left */}
+        <header className="py-6">
+          <div className="flex items-center justify-between mb-6">
+            {/* Logo and Navigation */}
             <div className="flex items-center gap-4">
               <Logo showSubtitle={!selectedList} />
               {selectedList && (
-                <div className="hidden sm:flex items-center gap-2 text-gray-400 
-                             bg-gray-800/30 px-3 py-2 rounded-xl backdrop-blur-sm
-                             border border-gray-700/30">
-                  <ChevronRight size={16} className="text-green-400" />
+                <div className={`
+                  hidden sm:flex items-center gap-3 text-secondary 
+                  bg-surface-secondary border border-light dark:border-dark-border-light
+                  px-4 py-2 rounded-2xl backdrop-blur-sm
+                  ${getAnimationClass('animate-slide-in-right')}
+                `}>
+                  <ChevronRight 
+                    size={16} 
+                    className={`text-light-success-500 dark:text-dark-success-400 ${isRTL ? 'rotate-180' : ''}`} 
+                  />
                   <span className="font-medium">{selectedList.name}</span>
-                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse ml-2"></div>
+                  <div className="w-2 h-2 rounded-full bg-light-success-500 dark:bg-dark-success-400 animate-pulse-soft" />
                 </div>
               )}
             </div>
 
-            {/* Action Buttons on Right */}
+            {/* Action Buttons */}
             <div className="flex items-center gap-3">
+              <ThemeToggle variant="simple" />
+              
               {selectedList && (
                 <button
                   onClick={() => setShowEditMessageDialog(true)}
-                  className="group relative bg-gradient-to-r from-gray-800/50 to-gray-700/50 
-                           w-10 h-10 rounded-full flex items-center justify-center 
-                           hover:from-gray-700/50 hover:to-gray-600/50 
-                           transition-all duration-300 border border-gray-600/30
-                           sm:w-auto sm:px-4 sm:h-auto sm:py-2 sm:rounded-xl
-                           hover:scale-105 hover:shadow-lg hover:shadow-gray-500/20"
+                  className="
+                    group relative bg-surface-secondary border border-light dark:border-dark-border-light
+                    w-12 h-12 rounded-2xl flex items-center justify-center 
+                    hover:bg-surface-tertiary transition-all duration-300
+                    sm:w-auto sm:px-4 sm:h-auto sm:py-3 
+                    hover:scale-105 hover:shadow-medium focus:outline-none 
+                    focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                  "
+                  aria-label="تعديل قالب الرسالة"
                 >
-                  <MessageSquare size={18} className="text-gray-300 group-hover:text-white transition-colors" />
-                  <span className="hidden sm:inline sm:mr-2 text-gray-300 group-hover:text-white">
+                  <MessageSquare size={20} className="text-secondary group-hover:text-primary transition-colors" />
+                  <span className="hidden sm:inline sm:mr-2 text-secondary group-hover:text-primary font-medium">
                     تعديل الرسالة
                   </span>
-                  {/* Subtle glow effect */}
-                  <div className="absolute inset-0 rounded-full bg-gray-400/10 opacity-0 
-                               group-hover:opacity-100 transition-opacity duration-300 sm:rounded-xl"></div>
                 </button>
               )}
+              
               <button
                 onClick={() => setShowAddListDialog(true)}
-                className="group relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 
-                         w-10 h-10 rounded-full flex items-center justify-center 
-                         hover:from-green-500 hover:via-green-400 hover:to-emerald-500 
-                         transition-all duration-300 shadow-lg shadow-green-500/30
-                         sm:w-auto sm:px-4 sm:h-auto sm:py-2 sm:rounded-xl
-                         hover:scale-105 hover:shadow-xl hover:shadow-green-500/40
-                         border border-green-400/30"
+                className="
+                  group relative bg-gradient-to-br from-light-primary-500 to-light-primary-600
+                  dark:from-dark-primary-600 dark:to-dark-primary-700
+                  w-12 h-12 rounded-2xl flex items-center justify-center 
+                  hover:from-light-primary-400 hover:to-light-primary-500
+                  dark:hover:from-dark-primary-500 dark:hover:to-dark-primary-600
+                  transition-all duration-300 shadow-soft hover:shadow-glow
+                  sm:w-auto sm:px-4 sm:h-auto sm:py-3 
+                  hover:scale-105 focus:outline-none 
+                  focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                  text-white
+                "
+                aria-label="إنشاء قائمة جديدة"
               >
-                <Plus size={18} className="text-white drop-shadow-sm" />
-                <span className="hidden sm:inline sm:mr-2 text-white font-medium drop-shadow-sm">
+                <Plus size={20} className="drop-shadow-sm" />
+                <span className="hidden sm:inline sm:mr-2 font-medium drop-shadow-sm">
                   قائمة جديدة
                 </span>
-                {/* Animated pulse ring */}
-                <div className="absolute inset-0 rounded-full border-2 border-green-400/50 
-                             animate-pulse opacity-0 group-hover:opacity-100 
-                             transition-opacity duration-300 sm:rounded-xl"></div>
               </button>
             </div>
           </div>
 
           {/* Stats Section */}
           {selectedList && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
-              <StatsCard label="الإجمالي" value={stats.all} color="blue" />
-              <StatsCard label="متصل" value={stats.connected} color="green" />
-              <StatsCard label="غير متصل" value={stats.not_connected} color="amber" />
-              <StatsCard label="غير مدعوم" value={stats.unsupported} color="red" />
+            <div className={`grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6 ${getAnimationClass('animate-fade-in-up')}`}>
+              <StatsCard 
+                label="الإجمالي" 
+                value={stats.total} 
+                color="primary"
+                icon={MessageCircle}
+              />
+              <StatsCard 
+                label="متصل" 
+                value={stats.connected} 
+                color="success"
+                icon={Check}
+              />
+              <StatsCard 
+                label="غير متصل" 
+                value={stats.not_connected} 
+                color="warning"
+                icon={AlertTriangle}
+              />
+              <StatsCard 
+                label="غير مدعوم" 
+                value={stats.unsupported} 
+                color="error"
+                icon={X}
+              />
             </div>
           )}
 
           {/* Lists Section */}
-          <div className="mt-4 overflow-x-auto scrollbar-hide">
-            <div className="flex gap-2 pb-2">
-              {lists.map(list => (
-                <button
-                  key={list.id}
-                  onClick={() => setSelectedList(list)}
-                  className={`px-4 py-2 rounded-xl whitespace-nowrap flex items-center gap-2
-                           transition-all duration-300 ${
-                    selectedList?.id === list.id
-                      ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20'
-                      : 'bg-gray-800/30 text-gray-400 hover:bg-gray-800/50'
-                  }`}
-                >
-                  {list.name}
-                  
-                </button>
-              ))}
+          <div className="mb-6">
+            <div className="overflow-x-auto hide-scrollbar">
+              <div className="flex gap-3 pb-2 min-w-max">
+                {lists.map(list => (
+                  <button
+                    key={list.id}
+                    onClick={() => setSelectedList(list)}
+                    className={`
+                      px-6 py-3 rounded-2xl whitespace-nowrap flex items-center gap-2
+                      transition-all duration-300 ease-out-quart font-medium
+                      focus:outline-none focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                      ${selectedList?.id === list.id
+                        ? 'bg-gradient-to-r from-light-primary-500 to-light-primary-600 dark:from-dark-primary-600 dark:to-dark-primary-700 text-white shadow-soft'
+                        : 'bg-surface-secondary border border-light dark:border-dark-border-light text-secondary hover:bg-surface-tertiary hover:text-primary'
+                      }
+                    `}
+                    aria-pressed={selectedList?.id === list.id}
+                  >
+                    {list.name}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Search Section */}
-          <div className="relative mt-4">
-            <div className="flex items-center gap-4 mb-2">
-              <Search className="text-gray-400" size={18} />
+          <div className="relative">
+            <div className="flex items-center gap-4 bg-surface-secondary border border-light dark:border-dark-border-light rounded-2xl p-4">
+              <Search className="text-tertiary flex-shrink-0" size={20} />
               <input
                 type="text"
-                placeholder="بحث..."
+                placeholder="البحث في الأماكن..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 bg-gray-800/20 border border-gray-700/20 rounded-xl px-4 py-2.5 
-                         text-sm focus:ring-2 focus:ring-blue-500/30 transition-all duration-300"
+                className="
+                  flex-1 bg-transparent text-primary placeholder-tertiary
+                  focus:outline-none text-lg
+                "
+                aria-label="البحث في الأماكن"
               />
             </div>
           </div>
-        </div>
+        </header>
 
-        {/* Places Grid - Using the new component */}
-        {places.length > 0 && (
-           <PlacesGrid
-           selectedList={selectedList}
-           searchTerm={searchTerm}
-           onUpdateStatus={updatePlaceStatus}
-           onSendMessage={handleSendMessage}
-           onStatsUpdate={handleStatsUpdate}
-         />
-        )}
-
-        {/* Empty States */}
-        {!loading && places.length === 0 && selectedList && (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="relative mb-8 animate-float">
-              <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-20"></div>
-              <div className="relative bg-blue-500/10 p-6 rounded-full">
-                <MessageCircle size={56} className="text-blue-400" />
+        {/* Main Content */}
+        {selectedList ? (
+          <PlacesGrid
+            places={places.filter(place =>
+              place.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              place.phone.includes(searchTerm)
+            )}
+            onSendMessage={handleSendMessage}
+            onUpdateStatus={updatePlaceStatus}
+          />
+        ) : (
+          <div className={`
+            text-center py-16 ${getAnimationClass('animate-fade-in-up')}
+          `}>
+            <div className="max-w-md mx-auto">
+              <div className="w-24 h-24 mx-auto mb-6 bg-surface-secondary rounded-full flex items-center justify-center">
+                <MessageCircle className="w-12 h-12 text-tertiary" />
               </div>
+              <h2 className="text-2xl font-bold text-primary mb-4">
+                مرحباً بك في وا بلك
+              </h2>
+              <p className="text-secondary mb-8">
+                ابدأ بإنشاء قائمة جديدة لإرسال الرسائل الجماعية عبر واتساب
+              </p>
+              <button
+                onClick={() => setShowAddListDialog(true)}
+                className="
+                  group bg-gradient-to-r from-light-primary-500 to-light-primary-600
+                  dark:from-dark-primary-600 dark:to-dark-primary-700
+                  px-8 py-4 rounded-2xl flex items-center gap-3 mx-auto
+                  hover:from-light-primary-400 hover:to-light-primary-500
+                  dark:hover:from-dark-primary-500 dark:hover:to-dark-primary-600
+                  transition-all duration-300 shadow-soft hover:shadow-glow
+                  hover:scale-105 text-white font-medium
+                  focus:outline-none focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                "
+              >
+                <Plus size={20} />
+                <span>إنشاء قائمة جديدة</span>
+                <ChevronRight 
+                  size={20} 
+                  className={`
+                    opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                    ${isRTL ? 'rotate-180' : ''}
+                  `} 
+                />
+              </button>
             </div>
-            <h3 className="text-xl font-medium mb-3">لا توجد أماكن في هذه القائمة</h3>
-            <p className="text-gray-400 text-sm max-w-md">
-              قم بإضافة أماكن جديدة عن طريق تحميل ملف JSON للبدء في إرسال الرسائل
-            </p>
-          </div>
-        )}
-
-        {/* Initial State */}
-        {!loading && !selectedList && (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="relative mb-8 animate-float">
-              <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-20"></div>
-              <div className="relative bg-blue-500/10 p-6 rounded-full">
-                <MessageCircle size={56} className="text-blue-400" />
-              </div>
-            </div>
-            <h3 className="text-xl font-medium mb-3">اختر قائمة للبدء</h3>
-            <p className="text-gray-400 text-sm mb-8 max-w-md">
-              اختر قائمة من الأعلى أو قم بإنشاء قائمة جديدة للبدء في إدارة جهات الاتصال
-            </p>
-            <button
-              onClick={() => setShowAddListDialog(true)}
-              className="bg-blue-600 px-8 py-3 rounded-full flex items-center gap-3 
-                       hover:bg-blue-700 transition-all duration-300 
-                       shadow-sm shadow-blue-500/20 group"
-            >
-              <Plus size={20} />
-              <span>إنشاء قائمة جديدة</span>
-              <ChevronRight size={20} className="opacity-0 group-hover:opacity-100 
-                                              transition-opacity" />
-            </button>
           </div>
         )}
       </main>
@@ -410,88 +443,101 @@ const WhatsAppDashboard = () => {
       {/* Add List Dialog */}
       {showAddListDialog && (
         <AddListDialog
-        onClose={() => setShowAddListDialog(false)}
-        onSuccess={() => {
-          fetchLists();
-          setShowAddListDialog(false);
-        }}
-      />
+          onClose={() => setShowAddListDialog(false)}
+          onSuccess={() => {
+            fetchLists();
+            setShowAddListDialog(false);
+          }}
+        />
       )}
 
       {/* Edit Message Dialog */}
       {showEditMessageDialog && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-gray-900/95 backdrop-blur-xl"
-               onClick={() => setShowEditMessageDialog(false)} />
-          <div className="relative min-h-screen flex items-end sm:items-center justify-center p-4">
-            <div className="w-full max-w-lg animate-in slide-in-from-bottom duration-300">
-              <div className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 
-                           backdrop-blur-xl border border-gray-700/20 rounded-3xl 
-                           shadow-2xl">
-                <div className="p-6 space-y-6">
-                  {/* Header */}
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-bold bg-gradient-to-r from-gray-100 
-                                to-gray-300 bg-clip-text text-transparent">
-                      تعديل قالب الرسالة
-                    </h3>
-                    <button
-                      onClick={() => setShowEditMessageDialog(false)}
-                      className="p-2 rounded-xl hover:bg-gray-800/50 
-                               transition-colors group"
-                    >
-                      <X size={20} className="text-gray-400 group-hover:text-gray-200 
-                                          transition-colors" />
-                    </button>
-                  </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowEditMessageDialog(false)}
+            aria-hidden="true"
+          />
+          <div className={`
+            relative w-full max-w-lg bg-surface-primary border border-light dark:border-dark-border-light
+            rounded-3xl shadow-strong p-6 ${getAnimationClass('animate-scale-in')}
+          `}>
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-primary">
+                تعديل قالب الرسالة
+              </h3>
+              <button
+                onClick={() => setShowEditMessageDialog(false)}
+                className="
+                  p-2 rounded-xl hover:bg-surface-secondary 
+                  transition-colors group focus:outline-none
+                  focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                "
+                aria-label="إغلاق"
+              >
+                <X size={20} className="text-tertiary group-hover:text-primary transition-colors" />
+              </button>
+            </div>
 
-                  {/* Message Template */}
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm text-gray-400 block mb-1.5">
-                        قالب الرسالة
-                      </label>
-                      <textarea
-                        value={messageTemplate}
-                        onChange={(e) => setMessageTemplate(e.target.value)}
-                        placeholder="اكتب قالب الرسالة هنا..."
-                        className="w-full bg-gray-800/50 border border-gray-700/30 
-                                 rounded-xl p-4 text-sm focus:ring-2 
-                                 focus:ring-blue-500/50 transition-all h-48 
-                                 resize-none placeholder:text-gray-600"
-                      />
-                      <p className="text-xs text-gray-500 mt-2">
-                        المتغيرات المتاحة: ${'{name}'}, ${'{phone_number}'}, ${'{facebook_url}'}
-                      </p>
-                    </div>
+            {/* Message Template */}
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm text-secondary block mb-2 font-medium">
+                  قالب الرسالة
+                </label>
+                <textarea
+                  value={messageTemplate}
+                  onChange={(e) => setMessageTemplate(e.target.value)}
+                  placeholder="اكتب قالب الرسالة هنا..."
+                  className="
+                    w-full bg-surface-secondary border border-light dark:border-dark-border-light
+                    rounded-2xl p-4 text-primary placeholder-tertiary
+                    focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                    focus:border-transparent transition-all duration-300 h-32 resize-none
+                  "
+                  aria-describedby="template-help"
+                />
+                <p id="template-help" className="text-xs text-tertiary mt-2">
+                  المتغيرات المتاحة: {'{name}'}, {'{phone_number}'}, {'{facebook_url}'}
+                </p>
+              </div>
 
-                    {/* Action Buttons */}
-                    <div className="pt-4 space-y-3">
-                      <button
-                        onClick={updateMessageTemplate}
-                        className="w-full bg-gradient-to-r from-blue-600 to-blue-500 
-                                 hover:from-blue-500 hover:to-blue-400
-                                 py-3 rounded-xl flex items-center justify-center 
-                                 gap-2 transition-all duration-300 shadow-sm 
-                                 shadow-blue-500/20 group relative overflow-hidden"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent 
-                                     via-white/10 to-transparent -translate-x-full
-                                     group-hover:translate-x-full transition-transform 
-                                     duration-1000" />
-                        <span className="relative">حفظ التغييرات</span>
-                      </button>
-                      <button
-                        onClick={() => setShowEditMessageDialog(false)}
-                        className="w-full bg-gray-800/50 py-3 rounded-xl 
-                                 flex items-center justify-center gap-2 
-                                 hover:bg-gray-700/50 transition-all"
-                      >
-                        <span>إلغاء</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={updateMessageTemplate}
+                  disabled={loading}
+                  className="
+                    flex-1 bg-gradient-to-r from-light-primary-500 to-light-primary-600
+                    dark:from-dark-primary-600 dark:to-dark-primary-700
+                    py-3 rounded-2xl flex items-center justify-center gap-2
+                    hover:from-light-primary-400 hover:to-light-primary-500
+                    dark:hover:from-dark-primary-500 dark:hover:to-dark-primary-600
+                    transition-all duration-300 shadow-soft hover:shadow-glow
+                    text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed
+                    focus:outline-none focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                  "
+                >
+                  {loading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Check className="w-4 h-4" />
+                  )}
+                  <span>حفظ التغييرات</span>
+                </button>
+                <button
+                  onClick={() => setShowEditMessageDialog(false)}
+                  className="
+                    px-6 py-3 rounded-2xl bg-surface-secondary border border-light dark:border-dark-border-light
+                    text-secondary hover:text-primary hover:bg-surface-tertiary
+                    transition-all duration-300 font-medium
+                    focus:outline-none focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                  "
+                >
+                  إلغاء
+                </button>
               </div>
             </div>
           </div>
@@ -500,59 +546,18 @@ const WhatsAppDashboard = () => {
 
       {/* Loading State */}
       {loading && (
-        <div className="fixed inset-0 bg-gray-900/95 backdrop-blur-xl flex items-center 
-                      justify-center z-50">
-          <div className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 
-                       backdrop-blur-xl border border-gray-700/20 rounded-2xl p-6">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-surface-primary border border-light dark:border-dark-border-light rounded-3xl p-8 shadow-strong">
             <div className="flex items-center gap-4">
               <div className="relative">
-                <div className="absolute inset-0 bg-blue-500 blur-xl opacity-20"></div>
-                <Loader2 className="animate-spin text-blue-400 relative" size={24} />
+                <div className="absolute inset-0 bg-light-primary-500 dark:bg-dark-primary-500 blur-xl opacity-20" />
+                <Loader2 className="animate-spin text-light-primary-500 dark:text-dark-primary-400 relative" size={32} />
               </div>
-              <span className="text-lg">جاري التحميل...</span>
+              <span className="text-xl font-medium text-primary">جاري التحميل...</span>
             </div>
           </div>
         </div>
       )}
-
-      {/* Animations */}
-      <style jsx global>{`
-        .mask-fade-edges {
-          mask-image: linear-gradient(to right, 
-            transparent, black 10%, black 90%, transparent);
-        }
-        
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-        
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes slide-in-from-bottom {
-          from { transform: translateY(100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-
-        .slide-in-from-bottom {
-          animation: slide-in-from-bottom 0.3s ease-out;
-        }
-
-        .animate-in {
-          animation-fill-mode: forwards;
-        }
-      `}</style>
     </div>
   );
 };
