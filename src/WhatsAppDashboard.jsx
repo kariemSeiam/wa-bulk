@@ -216,102 +216,99 @@ const WhatsAppDashboard = () => {
 
   return (
     <div 
-      className={`
-        min-h-screen bg-surface-primary text-primary
-        transition-all duration-500 ease-out-quart
-        ${getRTLClass('', 'rtl')}
-      `}
-      dir={isRTL ? 'rtl' : 'ltr'}
+      className="min-h-screen bg-surface-primary text-primary transition-all duration-500 ease-out-quart"
+      dir="rtl"
     >
-      {/* Animated background elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-30">
-        <div className={`
-          absolute top-20 ${getRTLClass('left-10', 'right-10')} w-32 h-32 
-          bg-light-primary-500/5 dark:bg-dark-primary-500/10 rounded-full blur-3xl
-          ${getAnimationClass('animate-pulse-soft')}
-        `} />
-        <div className={`
-          absolute top-40 ${getRTLClass('right-20', 'left-20')} w-24 h-24 
-          bg-light-accent-500/5 dark:bg-dark-accent-500/10 rounded-full blur-2xl
-          ${getAnimationClass('animate-pulse-soft')}
-        `} style={{ animationDelay: '1s' }} />
-        <div className={`
-          absolute bottom-20 left-1/3 w-40 h-40 
-          bg-light-success-500/5 dark:bg-dark-success-500/10 rounded-full blur-3xl
-          ${getAnimationClass('animate-pulse-soft')}
-        `} style={{ animationDelay: '2s' }} />
-      </div>
+              {/* Animated background elements */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-30">
+          <div className={`
+            absolute top-20 right-10 w-32 h-32 
+            bg-light-primary-500/5 dark:bg-dark-primary-500/10 rounded-full blur-3xl
+            ${getAnimationClass('animate-pulse-soft')}
+          `} />
+          <div className={`
+            absolute top-40 left-20 w-24 h-24 
+            bg-light-accent-500/5 dark:bg-dark-accent-500/10 rounded-full blur-2xl
+            ${getAnimationClass('animate-pulse-soft')}
+          `} style={{ animationDelay: '1s' }} />
+          <div className={`
+            absolute bottom-20 right-1/3 w-40 h-40 
+            bg-light-success-500/5 dark:bg-dark-success-500/10 rounded-full blur-3xl
+            ${getAnimationClass('animate-pulse-soft')}
+          `} style={{ animationDelay: '2s' }} />
+        </div>
       
       <main className="container mx-auto px-4 pb-6 relative z-10">
         {/* Header Section */}
         <header className="py-6">
           <div className="flex items-center justify-between mb-6">
-            {/* Logo and Navigation */}
-            <div className="flex items-center gap-4">
-              <Logo showSubtitle={!selectedList} />
-              {selectedList && (
-                <div className={`
-                  hidden sm:flex items-center gap-3 text-secondary 
-                  bg-surface-secondary border border-light dark:border-dark-border-light
-                  px-4 py-2 rounded-2xl backdrop-blur-sm
-                  ${getAnimationClass('animate-slide-in-right')}
-                `}>
-                  <ChevronRight 
-                    size={16} 
-                    className={`text-light-success-500 dark:text-dark-success-400 ${isRTL ? 'rotate-180' : ''}`} 
-                  />
-                  <span className="font-medium">{selectedList.name}</span>
-                  <div className="w-2 h-2 rounded-full bg-light-success-500 dark:bg-dark-success-400 animate-pulse-soft" />
-                </div>
-              )}
-            </div>
+                          {/* Logo and Navigation */}
+              <div className="flex items-center gap-4">
+                <Logo showSubtitle={!selectedList} />
+                {selectedList && (
+                  <div className={`
+                    hidden sm:flex items-center gap-3 text-secondary 
+                    bg-surface-secondary border border-light dark:border-dark-border-light
+                    px-4 py-2 rounded-2xl backdrop-blur-sm
+                    ${getAnimationClass('animate-slide-in-right')}
+                  `}>
+                    <div className="w-2 h-2 rounded-full bg-light-success-500 dark:bg-dark-success-400 animate-pulse-soft" />
+                    <span className="font-medium">{selectedList.name}</span>
+                    <ChevronRight 
+                      size={16} 
+                      className="text-light-success-500 dark:text-dark-success-400 rotate-180" 
+                    />
+                  </div>
+                )}
+              </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3">
-              <ThemeToggle variant="simple" />
-              
-              {selectedList && (
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3">
+                
                 <button
-                  onClick={() => setShowEditMessageDialog(true)}
+                  onClick={() => setShowAddListDialog(true)}
                   className="
-                    group relative bg-surface-secondary border border-light dark:border-dark-border-light
+                    group relative bg-gradient-to-br from-light-primary-500 to-light-primary-600
+                    dark:from-dark-primary-600 dark:to-dark-primary-700
                     w-12 h-12 rounded-2xl flex items-center justify-center 
-                    hover:bg-surface-tertiary transition-all duration-300
+                    hover:from-light-primary-400 hover:to-light-primary-500
+                    dark:hover:from-dark-primary-500 dark:hover:to-dark-primary-600
+                    transition-all duration-300 shadow-soft hover:shadow-glow
                     sm:w-auto sm:px-4 sm:h-auto sm:py-3 
-                    hover:scale-105 hover:shadow-medium focus:outline-none 
+                    hover:scale-105 focus:outline-none 
                     focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                    text-white
                   "
-                  aria-label="تعديل قالب الرسالة"
+                  aria-label="إنشاء قائمة جديدة"
                 >
-                  <MessageSquare size={20} className="text-secondary group-hover:text-primary transition-colors" />
-                  <span className="hidden sm:inline sm:mr-2 text-secondary group-hover:text-primary font-medium">
-                    تعديل الرسالة
+                  <Plus size={20} className="drop-shadow-sm" />
+                  <span className="hidden sm:inline sm:ml-2 font-medium drop-shadow-sm">
+                    قائمة جديدة
                   </span>
                 </button>
-              )}
-              
-              <button
-                onClick={() => setShowAddListDialog(true)}
-                className="
-                  group relative bg-gradient-to-br from-light-primary-500 to-light-primary-600
-                  dark:from-dark-primary-600 dark:to-dark-primary-700
-                  w-12 h-12 rounded-2xl flex items-center justify-center 
-                  hover:from-light-primary-400 hover:to-light-primary-500
-                  dark:hover:from-dark-primary-500 dark:hover:to-dark-primary-600
-                  transition-all duration-300 shadow-soft hover:shadow-glow
-                  sm:w-auto sm:px-4 sm:h-auto sm:py-3 
-                  hover:scale-105 focus:outline-none 
-                  focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
-                  text-white
-                "
-                aria-label="إنشاء قائمة جديدة"
-              >
-                <Plus size={20} className="drop-shadow-sm" />
-                <span className="hidden sm:inline sm:mr-2 font-medium drop-shadow-sm">
-                  قائمة جديدة
-                </span>
-              </button>
-            </div>
+
+                {selectedList && (
+                  <button
+                    onClick={() => setShowEditMessageDialog(true)}
+                    className="
+                      group relative bg-surface-secondary border border-light dark:border-dark-border-light
+                      w-12 h-12 rounded-2xl flex items-center justify-center 
+                      hover:bg-surface-tertiary transition-all duration-300
+                      sm:w-auto sm:px-4 sm:h-auto sm:py-3 
+                      hover:scale-105 hover:shadow-medium focus:outline-none 
+                      focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
+                    "
+                    aria-label="تعديل قالب الرسالة"
+                  >
+                    <MessageSquare size={20} className="text-secondary group-hover:text-primary transition-colors" />
+                    <span className="hidden sm:inline sm:ml-2 text-secondary group-hover:text-primary font-medium">
+                      تعديل الرسالة
+                    </span>
+                  </button>
+                )}
+                
+                <ThemeToggle variant="simple" />
+              </div>
           </div>
 
           {/* Stats Section */}
@@ -375,11 +372,6 @@ const WhatsAppDashboard = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="البحث في الأماكن والجهات..."
-            showFilters={selectedList !== null}
-            onFilterClick={() => {
-              // Future filter functionality
-              console.log('Filter clicked');
-            }}
             className="mb-2"
           />
         </header>

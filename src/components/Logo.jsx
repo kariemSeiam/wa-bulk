@@ -92,7 +92,7 @@ const Logo = ({ className = "", showSubtitle = true }) => {
   const { isDark, isRTL, getAnimationClass, getRTLClass } = useTheme();
 
   return (
-    <div className={`flex items-center gap-3 ${className} ${getRTLClass('', 'flex-row-reverse')}`}>
+    <div className={`flex items-center gap-3 ${className}`}>
       <div className="relative">
         <LogoIcon 
           className={`
@@ -114,7 +114,7 @@ const Logo = ({ className = "", showSubtitle = true }) => {
         `} style={{ animationDelay: '1s' }} />
       </div>
       
-      <div className={`flex flex-col ${getRTLClass('items-start', 'items-end')}`}>
+      <div className="flex flex-col items-start">
         <h1 className={`
           text-2xl sm:text-3xl font-bold bg-gradient-to-r 
           from-light-primary-600 via-light-accent-500 to-light-primary-500
@@ -123,7 +123,7 @@ const Logo = ({ className = "", showSubtitle = true }) => {
           hover:from-light-primary-500 hover:via-light-accent-400 hover:to-light-primary-400
           dark:hover:from-dark-primary-300 dark:hover:via-dark-accent-500 dark:hover:to-dark-primary-200
           ${getAnimationClass('hover:scale-105')}
-          ${getRTLClass('font-inter', 'font-primary')}
+          font-primary
         `}>
           WA-Bulk
         </h1>
@@ -133,17 +133,16 @@ const Logo = ({ className = "", showSubtitle = true }) => {
             bg-gradient-to-r from-light-secondary-500 to-light-secondary-600
             dark:from-dark-secondary-400 dark:to-dark-secondary-300
             bg-clip-text text-transparent
-            ${getRTLClass('text-left', 'text-right font-primary')}
+            text-right font-primary
           `}>
-            {isRTL ? 'واتساب بالك' : 'Bulk WhatsApp'}
+            واتساب بالك
           </p>
         )}
       </div>
       
       {/* Enhanced decorative elements */}
       <div className={`
-        hidden sm:flex items-center gap-1.5 
-        ${getRTLClass('ml-3', 'mr-3')}
+        hidden sm:flex items-center gap-1.5 mr-3
         ${getAnimationClass('animate-fade-in')}
       `}>
         <div className={`

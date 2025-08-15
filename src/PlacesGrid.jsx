@@ -64,7 +64,7 @@ const PlaceCard = ({ place, onUpdateStatus, onSendMessage }) => {
         >
             {/* Status Indicator */}
             <div className={`
-                absolute top-4 ${getRTLClass('left-4', 'right-4')} 
+                absolute top-4 right-4
                 flex items-center gap-2 px-3 py-1.5 rounded-full text-sm 
                 ${statusConfig.bg} ${statusConfig.text} border ${statusConfig.border}
                 backdrop-blur-sm transition-all duration-300
@@ -100,7 +100,7 @@ const PlaceCard = ({ place, onUpdateStatus, onSendMessage }) => {
                             title="انقر لنسخ رقم الهاتف"
                         >
                             <Phone size={16} className="shrink-0" />
-                            <span className={`font-mono flex-1 ${getRTLClass('text-left', 'text-right')}`}>
+                            <span className="font-mono flex-1 text-right">
                                 {place.phone}
                             </span>
                             <div className={`
@@ -278,7 +278,7 @@ export const PlacesGrid = ({ places, onUpdateStatus, onSendMessage }) => {
     }
 
     return (
-        <div className="space-y-6" dir={isRTL ? 'rtl' : 'ltr'}>
+        <div className="space-y-6" dir="rtl">
             {/* Responsive Grid */}
             <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {places.map((place, index) => (
@@ -303,8 +303,6 @@ export const PlacesGrid = ({ places, onUpdateStatus, onSendMessage }) => {
 
 // Custom Form Components
 const CustomInput = ({ label, name, value, onChange, placeholder, disabled, type = 'text' }) => {
-    const { getRTLClass } = useTheme();
-    
     return (
         <div className="space-y-2">
             <label className="text-sm font-medium text-secondary block">
@@ -317,23 +315,21 @@ const CustomInput = ({ label, name, value, onChange, placeholder, disabled, type
                 onChange={onChange}
                 placeholder={placeholder}
                 disabled={disabled}
-                className={`
+                className="
                     w-full bg-surface-secondary border border-light dark:border-dark-border-light
                     rounded-2xl px-4 py-3 text-primary placeholder-tertiary
                     focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
                     focus:border-transparent transition-all duration-300
                     disabled:opacity-50 disabled:cursor-not-allowed
-                    ${getRTLClass('text-left', 'text-right')}
-                `}
-                dir={getRTLClass('ltr', 'rtl')}
+                    text-right
+                "
+                dir="rtl"
             />
         </div>
     );
 };
 
 const CustomTextarea = ({ label, name, value, onChange, placeholder, disabled, hint }) => {
-    const { getRTLClass } = useTheme();
-    
     return (
         <div className="space-y-2">
             <label className="text-sm font-medium text-secondary block">
@@ -346,15 +342,15 @@ const CustomTextarea = ({ label, name, value, onChange, placeholder, disabled, h
                 placeholder={placeholder}
                 disabled={disabled}
                 rows={4}
-                className={`
+                className="
                     w-full bg-surface-secondary border border-light dark:border-dark-border-light
                     rounded-2xl px-4 py-3 text-primary placeholder-tertiary
                     focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
                     focus:border-transparent transition-all duration-300 resize-none
                     disabled:opacity-50 disabled:cursor-not-allowed
-                    ${getRTLClass('text-left', 'text-right')}
-                `}
-                dir={getRTLClass('ltr', 'rtl')}
+                    text-right
+                "
+                dir="rtl"
             />
             {hint && (
                 <p className="text-xs text-tertiary">
