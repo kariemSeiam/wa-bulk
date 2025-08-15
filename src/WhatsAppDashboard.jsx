@@ -10,6 +10,98 @@ import Logo from './components/Logo.jsx';
 import ThemeToggle from './components/ThemeToggle.jsx';
 import SearchBar from './components/SearchBar.jsx';
 
+// Demo data for Arabic Riyal businesses
+const DEMO_LISTS = [
+  {
+    id: 1,
+    name: "شركات ومحلات الرياض - العملة السعودية",
+    description: "قائمة بالشركات والمحلات التجارية في الرياض التي تتعامل بالريال السعودي",
+    message_template: "مرحباً {name}، نود التعامل معكم. رقم الهاتف: {phone_number}",
+    created_at: "2024-01-15T10:00:00Z",
+    updated_at: "2024-01-15T10:00:00Z",
+    places_count: 8
+  }
+];
+
+const DEMO_PLACES = {
+  1: {
+    places: [
+      {
+        id: 1,
+        name: "مطعم البيك - الرياض",
+        phone: "+966112345678",
+        facebook_url: "https://facebook.com/albaiksa",
+        status: "connected",
+        currency: "SAR",
+        price_range: "50-150 ريال سعودي"
+      },
+      {
+        id: 2,
+        name: "مجوهرات الدانة الذهبية",
+        phone: "+966112345679",
+        facebook_url: "https://facebook.com/aldanajewelry",
+        status: "connected",
+        currency: "SAR",
+        price_range: "500-5000 ريال سعودي"
+      },
+      {
+        id: 3,
+        name: "متجر الكتروني - تقنية المستقبل",
+        phone: "+966112345680",
+        facebook_url: "https://facebook.com/futuretech",
+        status: "not_connected",
+        currency: "SAR",
+        price_range: "100-3000 ريال سعودي"
+      },
+      {
+        id: 4,
+        name: "صيدلية النور الطبية",
+        phone: "+966112345681",
+        facebook_url: "https://facebook.com/alnourpharmacy",
+        status: "connected",
+        currency: "SAR",
+        price_range: "20-500 ريال سعودي"
+      },
+      {
+        id: 5,
+        name: "مركز الأزياء الملكية",
+        phone: "+966112345682",
+        facebook_url: "https://facebook.com/royalfashion",
+        status: "unsupported",
+        currency: "SAR",
+        price_range: "200-2000 ريال سعودي"
+      },
+      {
+        id: 6,
+        name: "مكتبة جرير الرئيسية",
+        phone: "+966112345683",
+        facebook_url: "https://facebook.com/jarirbooks",
+        status: "connected",
+        currency: "SAR",
+        price_range: "25-800 ريال سعودي"
+      },
+      {
+        id: 7,
+        name: "مطعم الشرقي للمأكولات اللبنانية",
+        phone: "+966112345684",
+        facebook_url: "https://facebook.com/sharkirest",
+        status: "not_connected",
+        currency: "SAR",
+        price_range: "40-250 ريال سعودي"
+      },
+      {
+        id: 8,
+        name: "محل الواحة للعطور والبخور",
+        phone: "+966112345685",
+        facebook_url: "https://facebook.com/alwahaparfumes",
+        status: "connected",
+        currency: "SAR",
+        price_range: "30-1500 ريال سعودي"
+      }
+    ]
+  }
+};
+
 // Enhanced Stats Card Component with Theme Support
 const StatsCard = ({ label, value, color = 'primary', icon: Icon }) => {
   const { getAnimationClass, isDark } = useTheme();
@@ -123,55 +215,47 @@ const WhatsAppDashboard = () => {
     window.open(`https://wa.me/${place.phone}?text=${encodedMessage}`, '_blank');
   }, []);
 
-  // Update place status handler
+  // Update place status handler (demo mode)
   const updatePlaceStatus = async (placeId, newStatus) => {
     try {
-      const response = await fetch(`https://wabulk.pythonanywhere.com/api/places/${placeId}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      });
-
-      if (response.ok) {
-        setPlaces(prevPlaces =>
-          prevPlaces.map(place =>
-            place.id === placeId ? { ...place, status: newStatus } : place
-          )
-        );
-      }
+      // Simulate API delay for realistic loading experience
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Update local state
+      setPlaces(prevPlaces =>
+        prevPlaces.map(place =>
+          place.id === placeId ? { ...place, status: newStatus } : place
+        )
+      );
     } catch (error) {
       console.error('Error updating place status:', error);
     }
   };
 
-  // Fetch lists
+  // Fetch lists (using demo data)
   const fetchLists = useCallback(async () => {
     try {
-      const response = await fetch('https://wabulk.pythonanywhere.com/api/lists');
-      const data = await response.json();
-      setLists(data);
+      // Simulate API delay for realistic loading experience
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setLists(DEMO_LISTS);
     } catch (error) {
       console.error('Error fetching lists:', error);
     }
   }, []);
 
-  // Update message template
+  // Update message template (demo mode)
   const updateMessageTemplate = async () => {
     if (!selectedList) return;
     
     try {
       setLoading(true);
-      const response = await fetch(`https://wabulk.pythonanywhere.com/api/lists/${selectedList.id}/message-template`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message_template: messageTemplate })
-      });
-
-      if (response.ok) {
-        setSelectedList(prev => ({ ...prev, message_template: messageTemplate }));
-        setShowEditMessageDialog(false);
-        await fetchPlaces(selectedList.id);
-      }
+      // Simulate API delay for realistic loading experience
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Update local state
+      setSelectedList(prev => ({ ...prev, message_template: messageTemplate }));
+      setShowEditMessageDialog(false);
+      await fetchPlaces(selectedList.id);
     } catch (error) {
       console.error('Error updating message template:', error);
     } finally {
@@ -179,14 +263,19 @@ const WhatsAppDashboard = () => {
     }
   };
 
-  // Fetch places
+  // Fetch places (using demo data)
   const fetchPlaces = useCallback(async (listId) => {
     if (!listId) return;
     setLoading(true);
     try {
-      const response = await fetch(`https://wabulk.pythonanywhere.com/api/lists/${listId}/places`);
-      const data = await response.json();
-      setPlaces(data.places);
+      // Simulate API delay for realistic loading experience
+      await new Promise(resolve => setTimeout(resolve, 800));
+      const demoData = DEMO_PLACES[listId];
+      if (demoData) {
+        setPlaces(demoData.places);
+      } else {
+        setPlaces([]);
+      }
     } catch (error) {
       console.error('Error fetching places:', error);
     }
@@ -197,6 +286,13 @@ const WhatsAppDashboard = () => {
   useEffect(() => {
     fetchLists();
   }, [fetchLists]);
+
+  // Auto-select the first demo list when lists are loaded
+  useEffect(() => {
+    if (lists.length > 0 && !selectedList) {
+      setSelectedList(lists[0]);
+    }
+  }, [lists, selectedList]);
 
   useEffect(() => {
     if (selectedList) {
