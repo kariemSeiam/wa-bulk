@@ -2,91 +2,218 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/wa-bulk/assets/icon-CFxH94zI.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Primary Meta Tags -->
-    <title>WA Bulk | واتساب بالك</title>
-    <meta name="title" content="WA Bulk | واتساب بالك" />
-    <meta name="description" content="أداة احترافية لإدارة رسائل الواتساب التسويقية. أرسل رسائل مخصصة لعملائك بسهولة وفعالية." />
-
+    
+    <!-- Viewport and mobile optimization -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0, minimum-scale=1.0" />
+    
+    <!-- Core meta information -->
+    <title>WA-Bulk - واتساب بالك | إرسال رسائل واتساب جماعية</title>
+    <meta name="description" content="أداة إرسال الرسائل الجماعية عبر واتساب بطريقة سهلة وآمنة. إدارة جهات الاتصال وإرسال رسائل مخصصة بكفاءة عالية." />
+    <meta name="keywords" content="واتساب, رسائل جماعية, WhatsApp, Bulk messaging, إرسال رسائل, تسويق رقمي" />
+    <meta name="author" content="WA-Bulk Team" />
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://kariemseiam.github.io/wa-bulk/" />
-    <meta property="og:title" content="WA Bulk | واتساب بالك" />
-    <meta property="og:description" content="أداة احترافية لإدارة رسائل الواتساب التسويقية. أرسل رسائل مخصصة لعملائك بسهولة وفعالية." />
-    <meta property="og:image" content="https://kariemseiam.github.io/wa-bulk/preview.png" />
-
+    <meta property="og:url" content="https://kariemSeiam.github.io/wa-bulk/" />
+    <meta property="og:title" content="WA-Bulk - واتساب بالك | إرسال رسائل واتساب جماعية" />
+    <meta property="og:description" content="أداة إرسال الرسائل الجماعية عبر واتساب بطريقة سهلة وآمنة" />
+    <meta property="og:image" content="https://kariemSeiam.github.io/wa-bulk/og-image.jpg" />
+    <meta property="og:locale" content="ar_AR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://kariemseiam.github.io/wa-bulk/" />
-    <meta property="twitter:title" content="WA Bulk | واتساب بالك" />
-    <meta property="twitter:description" content="أداة احترافية لإدارة رسائل الواتساب التسويقية. أرسل رسائل مخصصة لعملائك بسهولة وفعالية." />
-    <meta property="twitter:image" content="https://kariemseiam.github.io/wa-bulk/preview.png" />
-
-    <!-- Additional SEO Meta Tags -->
-    <meta name="keywords" content="واتساب بالك, إرسال رسائل واتساب, تسويق واتساب, رسائل مخصصة, أداة تسويق, whatsapp marketing, bulk messages" />
-    <meta name="robots" content="index, follow" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="language" content="Arabic" />
-    <meta name="revisit-after" content="3 days" />
-    <meta name="author" content="Kariem Seiam" />
-
-    <!-- Application Meta Tags -->
-    <meta name="application-name" content="WA Bulk" />
-    <meta name="theme-color" content="#1F2937" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="WA Bulk" />
-
-    <!-- PWA Meta Tags -->
+    <meta property="twitter:url" content="https://kariemSeiam.github.io/wa-bulk/" />
+    <meta property="twitter:title" content="WA-Bulk - واتساب بالك | إرسال رسائل واتساب جماعية" />
+    <meta property="twitter:description" content="أداة إرسال الرسائل الجماعية عبر واتساب بطريقة سهلة وآمنة" />
+    <meta property="twitter:image" content="https://kariemSeiam.github.io/wa-bulk/twitter-image.jpg" />
+    
+    <!-- Theme and appearance -->
+    <meta name="theme-color" content="#a569ff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#bd51ff" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    
+    <!-- Icons and manifest -->
+    <link rel="icon" type="image/svg+xml" href="/wa-bulk/assets/icon-CFxH94zI.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-icon" href="/icon-192x192.png" />
-    <link rel="mask-icon" href="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20512%20512'%3e%3c!--%20Background%20Circle%20with%20gradient%20--%3e%3cdefs%3e%3clinearGradient%20id='bgGradient'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3e%3cstop%20offset='0%25'%20style='stop-color:%23F59E0B'%20/%3e%3cstop%20offset='100%25'%20style='stop-color:%23D97706'%20/%3e%3c/linearGradient%3e%3c!--%20Soft%20glow%20effect%20--%3e%3cfilter%20id='glow'%3e%3cfeGaussianBlur%20stdDeviation='3'%20result='blur'%20/%3e%3cfeComposite%20in='blur'%20in2='SourceGraphic'%20operator='over'%20/%3e%3c/filter%3e%3c/defs%3e%3c!--%20Main%20Circle%20--%3e%3ccircle%20cx='256'%20cy='256'%20r='248'%20fill='url(%23bgGradient)'%20/%3e%3c!--%20Decorative%20Islamic%20Pattern%20Ring%20--%3e%3cpath%20d='M256%2016c132.5%200%20240%20107.5%20240%20240s-107.5%20240-240%20240S16%20388.5%2016%20256%20123.5%2016%20256%2016'%20fill='none'%20stroke='%23FCD34D'%20stroke-width='16'%20stroke-dasharray='24,12'%20/%3e%3c!--%20Gift%20Box%20Base%20--%3e%3cpath%20d='M176%20206h160v160H176z'%20fill='%23FEF3C7'%20/%3e%3c!--%20Gift%20Box%20Ribbon%20--%3e%3cpath%20d='M236%20206v160M156%20246h200'%20stroke='%23F59E0B'%20stroke-width='40'%20/%3e%3c!--%20Gift%20Box%20Top%20--%3e%3cpath%20d='M156%20206h200v40H156z'%20fill='%23F59E0B'%20/%3e%3c!--%20Heart%20Design%20--%3e%3cpath%20d='M256%20186c-20-40-80-40-80%200%200%2040%2080%2080%2080%2080s80-40%2080-80c0-40-60-40-80%200'%20fill='%23FEF3C7'%20filter='url(%23glow)'%20/%3e%3c!--%20Islamic%20Crescent%20--%3e%3cpath%20d='M256%20146c-15-30-60-30-60%200%200%2030%2060%2060%2060%2060s60-30%2060-60c0-30-45-30-60%200'%20fill='%23FBBF24'%20opacity='0.6'%20/%3e%3c/svg%3e" color="#1F2937" />
-
-    <!-- Fonts -->
+    
+    <!-- Performance and preloading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
+    <link rel="dns-prefetch" href="https://wabulk.pythonanywhere.com" />
+    
+    <!-- Security headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    
+    <!-- Accessibility enhancements -->
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="format-detection" content="telephone=no" />
+    
+    <!-- PWA meta tags -->
+    <meta name="application-name" content="WA-Bulk" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="WA-Bulk" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="msapplication-TileColor" content="#a569ff" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "WA-Bulk",
+      "alternateName": "واتساب بالك",
+      "url": "https://kariemSeiam.github.io/wa-bulk/",
+      "description": "أداة إرسال الرسائل الجماعية عبر واتساب بطريقة سهلة وآمنة",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires modern browser with JavaScript enabled",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "WA-Bulk Team"
+      },
+      "inLanguage": ["ar", "en"],
+      "accessibilityFeature": [
+        "alternativeText",
+        "highContrastDisplay",
+        "keyboardNavigation",
+        "reducedMotion",
+        "synchronizedCaptions"
+      ],
+      "accessibilityControl": [
+        "fullKeyboardControl",
+        "fullMouseControl",
+        "fullTouchControl"
+      ],
+      "accessibilityHazard": "none"
+    }
+    </script>
+    
+    <!-- Critical CSS hint for better loading -->
     <style>
+      /* Critical loading styles */
       body {
-        font-family: 'Noto Kufi Arabic', sans-serif;
-        background-color: #111827;
-        color: #ffffff;
+        margin: 0;
+        padding: 0;
+        font-family: 'Tajawal', 'Inter', system-ui, sans-serif;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
-
-      /* Loading state styles */
-      #root:empty {
+      
+      /* Prevent flash of unstyled content */
+      .loading-screen {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #a569ff, #8b3af7);
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100vh;
-        margin: 0;
-        background: linear-gradient(to bottom right, #111827, #1F2937);
+        z-index: 9999;
+        color: white;
+        font-size: 1.25rem;
+        font-weight: 600;
       }
-
-      #root:empty::after {
-        content: "";
-        width: 40px;
-        height: 40px;
-        border: 4px solid #374151;
-        border-top-color: #60A5FA;
-        border-radius: 50%;
-        animation: loading 0.75s infinite linear;
-      }
-
-      @keyframes loading {
-        to {
-          transform: rotate(360deg);
+      
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        * {
+          border-color: currentColor !important;
         }
       }
+      
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+      
+      /* Focus management for accessibility */
+      :focus-visible {
+        outline: 2px solid #a569ff;
+        outline-offset: 2px;
+      }
     </style>
-    <script type="module" crossorigin src="/wa-bulk/assets/index-PGgQ6VxZ.js"></script>
-    <link rel="stylesheet" crossorigin href="/wa-bulk/assets/index-BmC37JQU.css">
+    <script type="module" crossorigin src="/wa-bulk/assets/index-Ca9igD0h.js"></script>
+    <link rel="stylesheet" crossorigin href="/wa-bulk/assets/index-C2Eivs9j.css">
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Loading screen for better UX -->
+    <div id="loading-screen" class="loading-screen" aria-label="جاري التحميل">
+      <div>
+        <div style="margin-bottom: 1rem;">جاري تحميل WA-Bulk...</div>
+        <div style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid white; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+      </div>
+    </div>
+    
+    <!-- Main app container -->
+    <div id="root" role="main" aria-label="تطبيق WA-Bulk الرئيسي"></div>
+    
+    <!-- Loading spinner animation -->
+    <style>
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+    
+    <!-- JavaScript module -->
+    
+    <!-- Remove loading screen after app loads -->
+    <script>
+      // Remove loading screen once React app is mounted
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const loadingScreen = document.getElementById('loading-screen');
+          if (loadingScreen) {
+            loadingScreen.style.opacity = '0';
+            loadingScreen.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => {
+              loadingScreen.remove();
+            }, 500);
+          }
+        }, 1000);
+      });
+      
+      // Service Worker registration for PWA capabilities
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+      
+      // Performance monitoring
+      if ('performance' in window) {
+        window.addEventListener('load', () => {
+          setTimeout(() => {
+            const perfData = performance.getEntriesByType('navigation')[0];
+            console.log('App loaded in:', perfData.loadEventEnd - perfData.fetchStart, 'ms');
+          }, 0);
+        });
+      }
+    </script>
+    
+    <!-- Accessibility announcements for screen readers -->
+    <div id="announcements" aria-live="polite" aria-atomic="true" style="position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;"></div>
   </body>
 </html>
