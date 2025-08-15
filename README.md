@@ -30,6 +30,34 @@
 
 ---
 
+## 📱 Screenshots
+
+### Mobile Interface
+<div align="center">
+
+![WA Bulk Mobile Interface](https://user-images.githubusercontent.com/placeholder/wa-bulk-mobile.png)
+
+*Modern Arabic RTL interface with dark theme and intuitive navigation*
+
+</div>
+
+The mobile interface features:
+- **🌙 Dark Theme**: Eye-friendly design for extended use
+- **🇸🇦 Arabic RTL Support**: Native right-to-left text direction
+- **📱 Mobile-First**: Optimized for touch interactions
+- **✨ Modern UI**: Clean, minimal design with glassmorphism effects
+- **🎯 Quick Actions**: Easy access to create new contact lists
+- **📋 List Management**: Simple workflow to get started with campaigns
+
+### Key Interface Elements
+- **Header**: App branding with search functionality
+- **Welcome Screen**: Guided onboarding for new users
+- **Action Buttons**: Clear call-to-action for list creation
+- **Status Indicators**: Visual feedback for user actions
+- **Navigation**: Intuitive bottom navigation for easy access
+
+---
+
 ## 🌟 Features
 
 ### 🎯 Core Capabilities
@@ -43,9 +71,10 @@
 ### 💫 What Makes This Special
 - **🔒 Privacy First**: No data stored on external servers - everything runs locally
 - **⚡ Lightning Fast**: Modern React architecture with optimized performance
-- **🎭 Beautiful UI**: Glassmorphism design with smooth animations
+- **🎭 Beautiful UI**: Glassmorphism design with smooth animations and dark theme
 - **🛡️ Status Tracking**: Monitor connection status for each contact
 - **📋 Bulk Operations**: Handle hundreds of contacts efficiently
+- **📱 Mobile Excellence**: Touch-optimized interface with perfect mobile experience
 
 ### 📊 Feature Comparison
 
@@ -67,12 +96,18 @@
 1. **Access the Application**
    - Visit [https://kariemseiam.github.io/wa-bulk/](https://kariemseiam.github.io/wa-bulk/)
    - The app loads instantly in your browser
+   - Mobile-optimized interface works perfectly on all devices
 
-2. **Prepare Your Data**
+2. **Create Your First List**
+   - Click "إنشاء قائمة جديدة" (Create New List) on the welcome screen
+   - Give your contact list a meaningful name
+   - The interface guides you through the setup process
+
+3. **Prepare Your Data**
    - Format your customer data as JSON
    - Required fields: `name`, `phone_number`, `facebook_url` (optional)
 
-3. **Create a Campaign**
+4. **Create a Campaign**
    ```json
    [
      {
@@ -170,6 +205,8 @@ graph TD
 - **Load Time**: < 2 seconds on 3G
 - **Memory Usage**: < 50MB runtime
 - **Responsive**: 60fps animations on mobile
+- **Touch Optimized**: Smooth touch interactions and gestures
+- **Dark Theme**: Optimized for battery life on mobile devices
 
 ### 🔒 Security & Privacy
 - **Local Processing**: All data handled client-side
