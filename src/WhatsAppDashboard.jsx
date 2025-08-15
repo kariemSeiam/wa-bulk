@@ -8,6 +8,7 @@ import { useTheme } from '../contexts/ThemeContext.jsx';
 import { AddListDialog, PlacesGrid } from './PlacesGrid.jsx';
 import Logo from './components/Logo.jsx';
 import ThemeToggle from './components/ThemeToggle.jsx';
+import SearchBar from './components/SearchBar.jsx';
 
 // Enhanced Stats Card Component with Theme Support
 const StatsCard = ({ label, value, color = 'primary', icon: Icon }) => {
@@ -369,23 +370,18 @@ const WhatsAppDashboard = () => {
             </div>
           </div>
 
-          {/* Search Section */}
-          <div className="relative">
-            <div className="flex items-center gap-4 bg-surface-secondary border border-light dark:border-dark-border-light rounded-2xl p-4">
-              <Search className="text-tertiary flex-shrink-0" size={20} />
-              <input
-                type="text"
-                placeholder="البحث في الأماكن..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="
-                  flex-1 bg-transparent text-primary placeholder-tertiary
-                  focus:outline-none text-lg
-                "
-                aria-label="البحث في الأماكن"
-              />
-            </div>
-          </div>
+          {/* Enhanced Search Section */}
+          <SearchBar
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="البحث في الأماكن والجهات..."
+            showFilters={selectedList !== null}
+            onFilterClick={() => {
+              // Future filter functionality
+              console.log('Filter clicked');
+            }}
+            className="mb-2"
+          />
         </header>
 
         {/* Main Content */}
