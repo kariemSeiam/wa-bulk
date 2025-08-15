@@ -5,16 +5,58 @@ import {
   ChevronRight, Settings, MoreVertical, ArrowUpDown
 } from 'lucide-react';
 import {AddListDialog, PlacesGrid } from './PlacesGrid.jsx'; // Import the new PlacesGrid component
+import Logo from './components/Logo.jsx'; // Import the new Logo component
 
 
 
-// Stats Card Component
-const StatsCard = ({ label, value, color = 'blue' }) => (
-  <div className={`bg-${color}-500/10 px-4 py-2 rounded-xl`}>
-    <div className={`text-${color}-400 text-sm mb-1`}>{label}</div>
-    <div className="text-xl font-bold">{value}</div>
-  </div>
-);
+// Enhanced Stats Card Component
+const StatsCard = ({ label, value, color = 'blue' }) => {
+  const colorVariants = {
+    blue: {
+      bg: 'bg-blue-500/10',
+      text: 'text-blue-400',
+      border: 'border-blue-500/20',
+      glow: 'shadow-blue-500/10'
+    },
+    green: {
+      bg: 'bg-green-500/10',
+      text: 'text-green-400',
+      border: 'border-green-500/20',
+      glow: 'shadow-green-500/10'
+    },
+    amber: {
+      bg: 'bg-amber-500/10',
+      text: 'text-amber-400',
+      border: 'border-amber-500/20',
+      glow: 'shadow-amber-500/10'
+    },
+    red: {
+      bg: 'bg-red-500/10',
+      text: 'text-red-400',
+      border: 'border-red-500/20',
+      glow: 'shadow-red-500/10'
+    }
+  };
+  
+  const variant = colorVariants[color] || colorVariants.blue;
+  
+  return (
+    <div className={`${variant.bg} px-4 py-3 rounded-xl border ${variant.border} 
+                     backdrop-blur-sm transition-all duration-300 
+                     hover:scale-105 hover:shadow-lg ${variant.glow}
+                     group cursor-pointer`}>
+      <div className={`${variant.text} text-sm mb-1 font-medium transition-colors
+                      group-hover:brightness-110`}>
+        {label}
+      </div>
+      <div className="text-xl font-bold text-white group-hover:text-white/90 transition-colors">
+        {value}
+      </div>
+      <div className={`w-full h-0.5 ${variant.bg} rounded-full mt-2 opacity-0 
+                      group-hover:opacity-100 transition-opacity duration-300`}></div>
+    </div>
+  );
+};
 
 const WhatsAppDashboard = () => {
   // State Management
@@ -188,48 +230,77 @@ const WhatsAppDashboard = () => {
   }, [places]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900/95 
-                    to-gray-900/80 backdrop-blur-2xl border-b border-gray-800/30 
-                    text-white overflow-x-hidden"
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black 
+                    text-white overflow-x-hidden relative"
          dir="rtl">
-      <main className="container mx-auto px-4 pb-6">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-green-500/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl animate-pulse" 
+             style={{animationDelay: '1s'}}></div>
+        <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-cyan-500/5 rounded-full blur-3xl animate-pulse"
+             style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/3 right-10 w-20 h-20 bg-emerald-500/5 rounded-full blur-2xl animate-pulse"
+             style={{animationDelay: '0.5s'}}></div>
+      </div>
+      
+      <main className="container mx-auto px-4 pb-6 relative z-10">
         {/* Header Section */}
         <div className="container mx-auto py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 
-                           via-blue-500 to-blue-600 bg-clip-text text-transparent">
-                WA-Bulk
-              </h1>
+            {/* Logo and Navigation on Left */}
+            <div className="flex items-center gap-4">
+              <Logo showSubtitle={!selectedList} />
               {selectedList && (
-                <div className="hidden sm:flex items-center gap-2 text-gray-400">
-                  <ChevronRight size={16} />
-                  <span>{selectedList.name}</span>
+                <div className="hidden sm:flex items-center gap-2 text-gray-400 
+                             bg-gray-800/30 px-3 py-2 rounded-xl backdrop-blur-sm
+                             border border-gray-700/30">
+                  <ChevronRight size={16} className="text-green-400" />
+                  <span className="font-medium">{selectedList.name}</span>
+                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse ml-2"></div>
                 </div>
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Action Buttons on Right */}
+            <div className="flex items-center gap-3">
               {selectedList && (
                 <button
                   onClick={() => setShowEditMessageDialog(true)}
-                  className="bg-gray-800/50 w-10 h-10 rounded-full flex items-center 
-                           justify-center hover:bg-gray-700/50 transition-all duration-300
-                           sm:w-auto sm:px-4 sm:h-auto sm:py-2 sm:rounded-xl"
+                  className="group relative bg-gradient-to-r from-gray-800/50 to-gray-700/50 
+                           w-10 h-10 rounded-full flex items-center justify-center 
+                           hover:from-gray-700/50 hover:to-gray-600/50 
+                           transition-all duration-300 border border-gray-600/30
+                           sm:w-auto sm:px-4 sm:h-auto sm:py-2 sm:rounded-xl
+                           hover:scale-105 hover:shadow-lg hover:shadow-gray-500/20"
                 >
-                  <MessageSquare size={18} />
-                  <span className="hidden sm:inline sm:mr-2">تعديل الرسالة</span>
+                  <MessageSquare size={18} className="text-gray-300 group-hover:text-white transition-colors" />
+                  <span className="hidden sm:inline sm:mr-2 text-gray-300 group-hover:text-white">
+                    تعديل الرسالة
+                  </span>
+                  {/* Subtle glow effect */}
+                  <div className="absolute inset-0 rounded-full bg-gray-400/10 opacity-0 
+                               group-hover:opacity-100 transition-opacity duration-300 sm:rounded-xl"></div>
                 </button>
               )}
               <button
                 onClick={() => setShowAddListDialog(true)}
-                className="bg-blue-600 w-10 h-10 rounded-full flex items-center 
-                         justify-center hover:bg-blue-700 transition-all duration-300
-                         shadow-sm shadow-blue-500/20
-                         sm:w-auto sm:px-4 sm:h-auto sm:py-2 sm:rounded-xl"
+                className="group relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 
+                         w-10 h-10 rounded-full flex items-center justify-center 
+                         hover:from-green-500 hover:via-green-400 hover:to-emerald-500 
+                         transition-all duration-300 shadow-lg shadow-green-500/30
+                         sm:w-auto sm:px-4 sm:h-auto sm:py-2 sm:rounded-xl
+                         hover:scale-105 hover:shadow-xl hover:shadow-green-500/40
+                         border border-green-400/30"
               >
-                <Plus size={18} />
-                <span className="hidden sm:inline sm:mr-2">قائمة جديدة</span>
+                <Plus size={18} className="text-white drop-shadow-sm" />
+                <span className="hidden sm:inline sm:mr-2 text-white font-medium drop-shadow-sm">
+                  قائمة جديدة
+                </span>
+                {/* Animated pulse ring */}
+                <div className="absolute inset-0 rounded-full border-2 border-green-400/50 
+                             animate-pulse opacity-0 group-hover:opacity-100 
+                             transition-opacity duration-300 sm:rounded-xl"></div>
               </button>
             </div>
           </div>
