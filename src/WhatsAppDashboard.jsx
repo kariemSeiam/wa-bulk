@@ -274,15 +274,15 @@ const WhatsAppDashboard = () => {
                     hover:from-light-primary-400 hover:to-light-primary-500
                     dark:hover:from-dark-primary-500 dark:hover:to-dark-primary-600
                     transition-all duration-300 shadow-soft hover:shadow-glow
-                    sm:w-auto sm:px-4 sm:h-auto sm:py-3 
+                    sm:w-auto sm:px-4 sm:h-auto sm:py-3 sm:gap-2
                     hover:scale-105 focus:outline-none 
                     focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
                     text-white
                   "
                   aria-label="إنشاء قائمة جديدة"
                 >
-                  <Plus size={20} className="drop-shadow-sm" />
-                  <span className="hidden sm:inline sm:ml-2 font-medium drop-shadow-sm">
+                  <Plus size={20} className="drop-shadow-sm flex-shrink-0" />
+                  <span className="hidden sm:inline font-medium drop-shadow-sm">
                     قائمة جديدة
                   </span>
                 </button>
@@ -405,7 +405,7 @@ const WhatsAppDashboard = () => {
                 className="
                   group bg-gradient-to-r from-light-primary-500 to-light-primary-600
                   dark:from-dark-primary-600 dark:to-dark-primary-700
-                  px-8 py-4 rounded-2xl flex items-center gap-3 mx-auto
+                  px-8 py-4 rounded-2xl flex items-center justify-center gap-3 mx-auto
                   hover:from-light-primary-400 hover:to-light-primary-500
                   dark:hover:from-dark-primary-500 dark:hover:to-dark-primary-600
                   transition-all duration-300 shadow-soft hover:shadow-glow
@@ -413,12 +413,12 @@ const WhatsAppDashboard = () => {
                   focus:outline-none focus:ring-2 focus:ring-light-primary-500 dark:focus:ring-dark-primary-500
                 "
               >
-                <Plus size={20} />
-                <span>إنشاء قائمة جديدة</span>
+                <Plus size={20} className="flex-shrink-0" />
+                <span className="whitespace-nowrap">إنشاء قائمة جديدة</span>
                 <ChevronRight 
                   size={20} 
                   className={`
-                    opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                    opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-shrink-0
                     ${isRTL ? 'rotate-180' : ''}
                   `} 
                 />

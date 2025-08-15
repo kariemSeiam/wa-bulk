@@ -51,11 +51,11 @@ const SearchBar = ({
     <div className={`relative group ${className}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Main Search Container */}
       <div className={`
-        relative bg-surface-secondary border-2 transition-all duration-500 ease-out-quart
+        relative bg-surface-secondary border transition-all duration-500 ease-out-quart
         rounded-3xl overflow-hidden backdrop-blur-sm
         ${isFocused 
-          ? 'border-light-primary-400 dark:border-dark-primary-500 shadow-glow bg-surface-primary' 
-          : 'border-light-border-light dark:border-dark-border-light hover:border-light-primary-300 dark:hover:border-dark-primary-600'
+          ? 'border-light-primary-400/30 dark:border-dark-primary-500/30 shadow-glow bg-surface-primary' 
+          : 'border-light-border-light/20 dark:border-dark-border-light/20 hover:border-light-primary-300/40 dark:hover:border-dark-primary-600/40'
         }
         ${getAnimationClass('hover:scale-[1.01]')}
         ${isTyping && !shouldReduceMotion ? 'animate-search-typing' : ''}
