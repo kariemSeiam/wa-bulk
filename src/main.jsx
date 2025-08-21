@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
 
 import { ThemeProvider } from '../contexts/ThemeContext.jsx';
-import WhatsAppDashboard from './WhatsAppDashboard.jsx';
+import NexoraApp from './NexoraApp.jsx';
 
 const App = () => {
   return (
@@ -17,7 +17,7 @@ const App = () => {
         </a>
         
         <main id="main-content" className="min-h-screen bg-surface-primary">
-          <WhatsAppDashboard />
+          <NexoraApp />
         </main>
       </ThemeProvider>
     </StrictMode>
