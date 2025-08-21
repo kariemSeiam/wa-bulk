@@ -197,8 +197,9 @@ export default {
         }
       },
       fontFamily: {
-        primary: ['Tajawal', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['Tajawal', 'Inter', 'system-ui', 'sans-serif'],
+        primary: ['Cairo', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['Cairo', 'Inter', 'system-ui', 'sans-serif'],
+        cairo: ['Cairo', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       fontSize: {
