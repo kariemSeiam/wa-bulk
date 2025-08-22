@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
-// Theme configuration with WCAG 3 compliant colors
+// Modern theme configuration with enhanced WCAG 3 compliant colors
 const themeConfig = {
   light: {
     name: 'light',
@@ -19,15 +19,18 @@ const themeConfig = {
       '--color-bg-primary': '#ffffff',
       '--color-bg-secondary': '#f8fafc',
       '--color-bg-tertiary': '#f1f5f9',
+      '--color-bg-glass': 'rgba(255, 255, 255, 0.8)',
       '--color-text-primary': '#0f172a',
       '--color-text-secondary': '#475569',
       '--color-text-tertiary': '#64748b',
       '--color-border-light': '#e2e8f0',
       '--color-border-medium': '#cbd5e1',
-      '--color-primary-500': '#a569ff',
+      '--color-primary-500': '#6366f1',
       '--color-accent-500': '#f97316',
-      '--shadow-soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
-      '--shadow-glow': '0 0 20px rgba(165, 105, 255, 0.15)',
+      '--shadow-soft': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+      '--shadow-medium': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+      '--shadow-glow': '0 0 20px rgba(99, 102, 241, 0.3)',
+      '--shadow-glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
     }
   },
   dark: {
@@ -44,18 +47,21 @@ const themeConfig = {
       border: 'dark-border',
     },
     cssVars: {
-      '--color-bg-primary': '#0f1419',
-      '--color-bg-secondary': '#1a202c',
-      '--color-bg-tertiary': '#2d3748',
-      '--color-text-primary': '#f7fafc',
+      '--color-bg-primary': '#0a0a0f',
+      '--color-bg-secondary': '#14141f',
+      '--color-bg-tertiary': '#1e1e2e',
+      '--color-bg-glass': 'rgba(20, 20, 31, 0.8)',
+      '--color-text-primary': '#f8fafc',
       '--color-text-secondary': '#e2e8f0',
       '--color-text-tertiary': '#cbd5e0',
-      '--color-border-light': '#2d3748',
-      '--color-border-medium': '#4a5568',
-      '--color-primary-500': '#bd51ff',
-      '--color-accent-500': '#edcc71',
-      '--shadow-soft': '0 2px 15px -3px rgba(0, 0, 0, 0.3), 0 10px 20px -2px rgba(0, 0, 0, 0.2)',
-      '--shadow-glow': '0 0 20px rgba(189, 81, 255, 0.25)',
+      '--color-border-light': '#1e1e2e',
+      '--color-border-medium': '#28283d',
+      '--color-primary-500': '#7f7fdb',
+      '--color-accent-500': '#c59764',
+      '--shadow-soft': '0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2)',
+      '--shadow-medium': '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
+      '--shadow-glow': '0 0 20px rgba(127, 127, 219, 0.4)',
+      '--shadow-glass': '0 8px 32px 0 rgba(10, 10, 15, 0.6)',
     }
   }
 };
@@ -96,7 +102,7 @@ export const ThemeProvider = ({ children }) => {
       const lang = navigator.language.split('-')[0];
       return RTL_LANGUAGES.includes(lang);
     }
-    return false;
+    return true; // Default to RTL for Arabic app
   });
 
   const [reducedMotion, setReducedMotion] = useState(() => {
@@ -228,6 +234,15 @@ export const ThemeProvider = ({ children }) => {
     }
     metaThemeColor.content = currentTheme.cssVars['--color-bg-primary'];
 
+    // Update viewport meta for better mobile experience
+    let viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (!viewportMeta) {
+      viewportMeta = document.createElement('meta');
+      viewportMeta.name = 'viewport';
+      document.head.appendChild(viewportMeta);
+    }
+    viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+
   }, [isDark, isRTL, reducedMotion, highContrast, currentTheme, applyCSSVariables]);
 
   // Keyboard shortcut for theme toggle (Ctrl/Cmd + Shift + T)
@@ -269,6 +284,17 @@ export const ThemeProvider = ({ children }) => {
     // Color utilities
     colors: currentTheme.colors,
     cssVars: currentTheme.cssVars,
+    
+    // Performance helpers
+    getTransitionClass: (duration = 'normal') => {
+      const transitions = {
+        fast: 'transition-all duration-150 ease-out',
+        normal: 'transition-all duration-300 ease-out',
+        slow: 'transition-all duration-500 ease-out',
+        spring: 'transition-all duration-300 ease-spring',
+      };
+      return transitions[duration] || transitions.normal;
+    },
   };
 
   return (

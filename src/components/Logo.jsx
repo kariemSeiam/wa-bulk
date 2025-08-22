@@ -1,139 +1,165 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext.jsx';
 
-const LogoIcon = ({ className = "w-8 h-8 sm:w-10 sm:h-10", isDark = false }) => (
+const LogoIcon = ({ className = "w-12 h-12 sm:w-16 sm:h-16", isDark = false }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className={className} role="img" aria-label="WA-Bulk Logo">
     <defs>
-      {/* Dynamic gradient for main background */}
+      {/* Modern gradient for main background */}
       <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style={{stopColor: isDark ? "#bd51ff" : "#a569ff"}} />
-        <stop offset="50%" style={{stopColor: isDark ? "#8d3fc5" : "#8b3af7"}} />
-        <stop offset="100%" style={{stopColor: isDark ? "#7536a5" : "#7632d8"}} />
+        <stop offset="0%" style={{stopColor: isDark ? "#7f7fdb" : "#6366f1"}} />
+        <stop offset="50%" style={{stopColor: isDark ? "#6e6ec4" : "#4f46e5"}} />
+        <stop offset="100%" style={{stopColor: isDark ? "#5d5dad" : "#4338ca"}} />
       </linearGradient>
       
-      {/* Dynamic gradient for broadcast waves */}
-      <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style={{stopColor: isDark ? "#edcc71" : "#f97316"}} />
-        <stop offset="100%" style={{stopColor: isDark ? "#bda25b" : "#ea580c"}} />
+      {/* Modern gradient for accent elements */}
+      <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style={{stopColor: isDark ? "#c59764" : "#f97316"}} />
+        <stop offset="100%" style={{stopColor: isDark ? "#b2885a" : "#ea580c"}} />
       </linearGradient>
       
       {/* Enhanced glow effect */}
-      <filter id="glow">
-        <feGaussianBlur stdDeviation="3" result="blur" />
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur" />
         <feComposite in="blur" in2="SourceGraphic" operator="over" />
       </filter>
       
-      {/* Dynamic drop shadow */}
+      {/* Modern drop shadow */}
       <filter id="dropshadow" x="-50%" y="-50%" width="200%" height="200%">
         <feDropShadow 
-          dx="2" 
+          dx="0" 
           dy="4" 
-          stdDeviation="4" 
-          floodColor={isDark ? "#000000" : "#000000"} 
-          floodOpacity={isDark ? "0.4" : "0.2"}
+          stdDeviation="6" 
+          floodColor={isDark ? "#000000" : "#6366f1"} 
+          floodOpacity={isDark ? "0.6" : "0.3"}
         />
+      </filter>
+
+      {/* Glass morphism effect */}
+      <filter id="glass" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feComposite in="blur" in2="SourceGraphic" operator="over" />
       </filter>
     </defs>
 
-    {/* Main circular background */}
+    {/* Main circular background with modern gradient */}
     <circle 
       cx="50" 
       cy="50" 
-      r="44" 
+      r="42" 
       fill="url(#bgGradient)" 
       filter="url(#dropshadow)"
+      className="transition-all duration-500"
+    />
+    
+    {/* Glass overlay */}
+    <circle 
+      cx="50" 
+      cy="50" 
+      r="42" 
+      fill="rgba(255, 255, 255, 0.1)" 
       className="transition-all duration-300"
     />
     
-    {/* Broadcast waves (representing bulk messaging) */}
-    <g opacity="0.8" className="animate-pulse-soft">
-      <path d="M15 30 Q25 18 35 30" stroke="url(#waveGradient)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M10 35 Q25 18 40 35" stroke="url(#waveGradient)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M8 40 Q25 20 42 40" stroke="url(#waveGradient)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+    {/* Enhanced broadcast waves */}
+    <g opacity="0.9" className="animate-pulse-soft">
+      <path d="M12 28 Q25 15 38 28" stroke="url(#accentGradient)" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M8 33 Q25 15 42 33" stroke="url(#accentGradient)" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M6 38 Q25 18 44 38" stroke="url(#accentGradient)" strokeWidth="3" fill="none" strokeLinecap="round" />
     </g>
     
-    {/* Main chat bubble (enhanced) */}
+    {/* Modern chat bubble */}
     <path 
-      d="M30 35 h25 a8 8 0 0 1 8 8 v12 a8 8 0 0 1 -8 8 h-18 l-7 6 v-6 a8 8 0 0 1 -8 -8 v-12 a8 8 0 0 1 8 -8 z" 
-      fill={isDark ? "#f7fafc" : "#ffffff"}
-      filter="url(#glow)"
+      d="M28 33 h28 a10 10 0 0 1 10 10 v14 a10 10 0 0 1 -10 10 h-20 l-8 7 v-7 a10 10 0 0 1 -10 -10 v-14 a10 10 0 0 1 10 -10 z" 
+      fill={isDark ? "#f8fafc" : "#ffffff"}
+      filter="url(#glass)"
       className="transition-colors duration-300"
     />
     
     {/* Message lines inside chat bubble */}
-    <line x1="35" y1="45" x2="55" y2="45" stroke="url(#bgGradient)" strokeWidth="2.5" strokeLinecap="round" />
-    <line x1="35" y1="50" x2="50" y2="50" stroke="url(#bgGradient)" strokeWidth="2.5" strokeLinecap="round" />
-    <line x1="35" y1="55" x2="52" y2="55" stroke="url(#bgGradient)" strokeWidth="2.5" strokeLinecap="round" />
+    <line x1="33" y1="43" x2="58" y2="43" stroke="url(#bgGradient)" strokeWidth="3" strokeLinecap="round" />
+    <line x1="33" y1="49" x2="53" y2="49" stroke="url(#bgGradient)" strokeWidth="3" strokeLinecap="round" />
+    <line x1="33" y1="55" x2="55" y2="55" stroke="url(#bgGradient)" strokeWidth="3" strokeLinecap="round" />
     
-    {/* Multiple users indicator (enhanced) */}
-    <g transform="translate(60, 25)" className="animate-float">
-      <circle cx="0" cy="0" r="3.5" fill="url(#waveGradient)" filter="url(#glow)" />
-      <circle cx="8" cy="3" r="3.5" fill="url(#waveGradient)" filter="url(#glow)" />
-      <circle cx="3" cy="8" r="3.5" fill="url(#waveGradient)" filter="url(#glow)" />
+    {/* Enhanced multiple users indicator */}
+    <g transform="translate(62, 22)" className="animate-float">
+      <circle cx="0" cy="0" r="4" fill="url(#accentGradient)" filter="url(#glow)" />
+      <circle cx="9" cy="4" r="4" fill="url(#accentGradient)" filter="url(#glow)" />
+      <circle cx="4" cy="9" r="4" fill="url(#accentGradient)" filter="url(#glow)" />
     </g>
     
-    {/* Send/broadcast arrow (enhanced) */}
+    {/* Modern send/broadcast arrow */}
     <path 
-      d="M70 60 l8 -3 l-8 -3 l0 2 l-6 0 l0 2 l6 0 z" 
-      fill={isDark ? "#f7fafc" : "#ffffff"} 
-      filter="url(#glow)"
+      d="M70 58 l10 -4 l-10 -4 l0 3 l-8 0 l0 2 l8 0 z" 
+      fill={isDark ? "#f8fafc" : "#ffffff"} 
+      filter="url(#glass)"
       className="transition-colors duration-300"
     />
     
-    {/* Success checkmarks (enhanced) */}
-    <g transform="translate(68, 45)" opacity="0.9">
-      <path d="M0 3 l2 2 l4 -4" stroke="url(#waveGradient)" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M2 3 l2 2 l4 -4" stroke="url(#waveGradient)" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    {/* Enhanced success indicators */}
+    <g transform="translate(68, 43)" opacity="0.95">
+      <path d="M0 4 l3 3 l6 -6" stroke="url(#accentGradient)" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 4 l3 3 l6 -6" stroke="url(#accentGradient)" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
     </g>
   </svg>
 );
 
 const Logo = ({ className = "", showSubtitle = true }) => {
-  const { isDark, isRTL, getAnimationClass, getRTLClass } = useTheme();
+  const { isDark, isRTL, getAnimationClass, getRTLClass, getTransitionClass } = useTheme();
 
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <div className="relative">
+    <div className={`flex items-center gap-4 ${className}`}>
+      <div className="relative group">
         <LogoIcon 
           className={`
-            w-12 h-12 sm:w-14 sm:h-14 transition-all duration-500 ease-out-quart
-            ${getAnimationClass('hover:scale-110 hover:rotate-6')}
+            w-16 h-16 sm:w-20 sm:h-20 transition-all duration-500 ease-spring
+            ${getAnimationClass('hover:scale-125 hover:rotate-12')}
+            cursor-pointer
           `}
           isDark={isDark}
         />
-        {/* Enhanced animated pulse ring */}
+        
+        {/* Enhanced animated pulse rings */}
         <div className={`
           absolute inset-0 rounded-full border-2 
-          border-light-primary-400/30 dark:border-dark-primary-500/40
-          ${getAnimationClass('animate-pulse-soft')}
+          border-light-primary-400/40 dark:border-dark-primary-500/50
+          ${getAnimationClass('animate-pulse-soft group-hover:animate-glow-pulse')}
+          transition-all duration-300
         `} />
-        {/* Additional glow ring */}
         <div className={`
-          absolute inset-1 rounded-full border border-light-accent-400/20 dark:border-dark-accent-500/30
+          absolute inset-2 rounded-full border border-light-accent-400/30 dark:border-dark-accent-500/40
           ${getAnimationClass('animate-pulse-soft')}
+          transition-all duration-300
         `} style={{ animationDelay: '1s' }} />
+        
+        {/* Glass morphism ring */}
+        <div className={`
+          absolute inset-1 rounded-full border border-white/20 dark:border-white/10
+          opacity-0 group-hover:opacity-100 transition-opacity duration-300
+          backdrop-blur-sm
+        `} />
       </div>
       
       <div className="flex flex-col items-start">
         <h1 className={`
-          text-2xl sm:text-3xl font-bold bg-gradient-to-r 
+          text-3xl sm:text-4xl font-bold bg-gradient-to-r 
           from-light-primary-600 via-light-accent-500 to-light-primary-500
           dark:from-dark-primary-400 dark:via-dark-accent-600 dark:to-dark-primary-300
           bg-clip-text text-transparent transition-all duration-500
           hover:from-light-primary-500 hover:via-light-accent-400 hover:to-light-primary-400
           dark:hover:from-dark-primary-300 dark:hover:via-dark-accent-500 dark:hover:to-dark-primary-200
-          ${getAnimationClass('hover:scale-105')}
-          font-primary
+          ${getAnimationClass('hover:scale-110')}
+          font-primary cursor-pointer
+          tracking-tight
         `}>
           WA-Bulk
         </h1>
         {showSubtitle && (
           <p className={`
-            text-xs sm:text-sm font-medium -mt-1 transition-all duration-300
-            bg-gradient-to-r from-light-secondary-500 to-light-secondary-600
+            text-sm sm:text-base font-bold -mt-1 transition-all duration-300
+            bg-gradient-to-r from-light-secondary-600 to-light-secondary-700
             dark:from-dark-secondary-400 dark:to-dark-secondary-300
             bg-clip-text text-transparent
-            text-right font-primary
+            text-right font-primary tracking-wide
           `}>
             واتساب بالك
           </p>
@@ -142,21 +168,24 @@ const Logo = ({ className = "", showSubtitle = true }) => {
       
       {/* Enhanced decorative elements */}
       <div className={`
-        hidden sm:flex items-center gap-1.5 mr-3
+        hidden sm:flex items-center gap-2 mr-4
         ${getAnimationClass('animate-fade-in')}
       `}>
         <div className={`
-          w-1.5 h-1.5 rounded-full bg-light-primary-500 dark:bg-dark-primary-400
+          w-2 h-2 rounded-full bg-light-primary-500 dark:bg-dark-primary-400
           ${getAnimationClass('animate-pulse-soft')}
+          shadow-glow
         `} />
         <div className={`
-          w-1.5 h-1.5 rounded-full bg-light-accent-500 dark:bg-dark-accent-500
+          w-2 h-2 rounded-full bg-light-accent-500 dark:bg-dark-accent-500
           ${getAnimationClass('animate-pulse-soft')}
-        `} style={{animationDelay: '0.5s'}} />
+          shadow-glow
+        `} style={{animationDelay: '0.7s'}} />
         <div className={`
-          w-1.5 h-1.5 rounded-full bg-light-success-500 dark:bg-dark-success-400
+          w-2 h-2 rounded-full bg-light-success-500 dark:bg-dark-success-400
           ${getAnimationClass('animate-pulse-soft')}
-        `} style={{animationDelay: '1s'}} />
+          shadow-glow
+        `} style={{animationDelay: '1.4s'}} />
       </div>
     </div>
   );
